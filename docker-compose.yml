@@ -1,6 +1,6 @@
 services:
   backend:
-    build: ./Demand-management--Back
+    build: ./Demand_management_back
     container_name: backend
     ports:
       - ${PORT_BACK}:${PORT_BACK}
@@ -29,7 +29,7 @@ services:
       - my-network
 
   frontend:
-    build: ./Demand-management--Front-1
+    build: ./Demand_management_front
     container_name: frontend
     ports:
       - "80:80"
