@@ -1,0 +1,362 @@
+/* ============================================================
+   GLOBAL SCROLL LOCK
+   Description: Forces the application to occupy the full viewport height 
+   and prevents the main body from scrolling.
+   ============================================================ */
+html, body {
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+}
+
+/* ============================================================
+   2-COLUMN LAYOUT
+   Description: Sets the main container height by subtracting the navbar 
+   height (70px) and prevents overflow.
+   ============================================================ */
+.row.full-height {
+  height: calc(100vh - 70px);
+  overflow: hidden;
+}
+
+/* ============================================================
+   CONTENT COLUMNS (Left & Right)
+   Description: Defines independent scrollable areas for the side panels 
+   with standardized padding and borders.
+   ============================================================ */
+.left-content, 
+.right-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 1rem;
+  background: #ffffff;
+  border-right: 1px solid #dee2e6;
+}
+
+/* ============================================================
+   RIGHT COMMENTS PANEL
+   Description: A flex container for the feedback section that ensures 
+   content stays within the parent boundaries.
+   ============================================================ */
+.right-comments {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #f8f9fa;
+  overflow: hidden;
+}
+
+/* ============================================================
+   COMMENTS CARD (Inner Scroll)
+   Description: The actual scrollable area for message bubbles with a fixed 
+   bottom offset and stable gutter to prevent layout shifts.
+   ============================================================ */
+.comments-card {
+  flex: 1;
+  overflow-y: auto !important;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  height: calc(100% - 300px);
+  scrollbar-gutter: stable;
+  margin-right: 6px;
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR DESIGN
+   Description: Personalized styling for Webkit browsers (Chrome, Edge, Safari) 
+   to match the application's gray/slate color palette.
+   ============================================================ */
+.left-content::-webkit-scrollbar,
+.comments-card::-webkit-scrollbar {
+  width: 10px;
+}
+
+.left-content::-webkit-scrollbar-track,
+.comments-card::-webkit-scrollbar-track {
+  background: #d9dee2;
+  border-radius: 6px;
+}
+
+.left-content::-webkit-scrollbar-thumb,
+.comments-card::-webkit-scrollbar-thumb {
+  background: #9aa0a6;
+  border-radius: 10px;
+  border: 2px solid #d9dee2;
+}
+
+.left-content::-webkit-scrollbar-thumb:hover,
+.comments-card::-webkit-scrollbar-thumb:hover {
+  background: #6c757d;
+}
+
+/* ============================================================
+   COMMENT BUBBLES
+   Description: Visual styling for timeline items and chat-like message 
+   bubbles with text wrapping and shadow.
+   ============================================================ */
+.timeline-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-item {
+  margin-bottom: 1rem;
+}
+
+.comment-bubble {
+  max-width: 100%;
+  width: fit-content;
+  display: inline-block;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  background: #ffffff;
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  margin-top: 0.4rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* ============================================================
+   DRAG & DROP CONTAINER
+   Description: Interactive file upload zone with hover states and 
+   status indicators (dragging, success, error).
+   ============================================================ */
+.upload-container {
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  padding: 20px 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+  width: 100%;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.upload-container.dragging {
+  border-color: #007bff;
+  background-color: #e6f2ff;
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.2);
+}
+
+.upload-container .icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.upload-container .icon i { color: #007bff; }
+.upload-container .icon.success i { color: #28a745; }
+
+.upload-container p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.upload-container .highlight {
+  color: #007bff;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.upload-container .file-name {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+
+.success-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.success-container { color: green; }
+.error-container { color: red; }
+
+.checkmark, .error-icon {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+/* ============================================================
+   LOADING & SPINNER
+   Description: Centered loading indicators and the rotation animation 
+   for the asynchronous spinner.
+   ============================================================ */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #e0e0e0;
+  border-top: 6px solid #3f51b5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   CHIPS & REMOVE ICONS
+   Description: Small badges used for tags or file names with a 
+   distinct "remove" interaction point.
+   ============================================================ */
+.chip {
+  background: #198754;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.remove-icon {
+  cursor: pointer;
+  font-size: 10px;
+}
+
+/* ============================================================
+   INPUTS & TEXTAREAS
+   Description: Uniform styling for form fields including focus 
+   effects and placeholder customization.
+   ============================================================ */
+.form-control, 
+input[type="text"], 
+input[type="email"], 
+input[type="number"], 
+textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, 
+input:focus, 
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0,123,255,0.25);
+  outline: none;
+}
+
+::placeholder {
+  color: #999;
+  font-size: 14px;
+}
+
+/* ============================================================
+   CUSTOM SELECT
+   Description: Standardizes the appearance of select dropdowns 
+   across browsers, removing native arrows for custom styling.
+   ============================================================ */
+.custom-select {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  appearance: none;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.custom-select:hover { border-color: #999; }
+
+.custom-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0,123,255,0.25);
+}
+
+.custom-select option {
+  padding: 12px 16px;
+  font-size: 15px;
+  background-color: #fff;
+  color: #333;
+}
+
+.custom-select option:hover,
+.custom-select option:focus {
+  background-color: #f1f5f9;
+  color: #007bff;
+}
+
+/* ============================================================
+   FULLSCREEN CONTAINER
+   Description: A flexible centering container often used for login 
+   screens or landing pages.
+   ============================================================ */
+.fullscreen-container {
+  min-height: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* ============================================================
+   SIDEBAR (OFFCANVAS)
+   Description: Specific styling for the navigation sidebar, 
+   including item transitions and navbar button cleanup.
+   ============================================================ */
+.offcanvas {
+  width: 280px !important;
+}
+
+.list-group-item {
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #444;
+}
+
+.list-group-item:hover {
+  background-color: #f0fdf4 !important;
+  color: #198754;
+  padding-left: 2rem;
+}
+
+.list-group-item i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+.navbar .btn:focus {
+  box-shadow: none;
+}

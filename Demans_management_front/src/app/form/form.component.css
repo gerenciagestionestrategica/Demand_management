@@ -1,0 +1,491 @@
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+
+/* Adjusts the navigation bar container to occupy the full width 
+   and removes unwanted margins */
+.navbar .container-fluid {
+  margin: 0 !important;
+  max-width: 100% !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* ============================================================
+   MAIN CONTAINER - FULLSCREEN
+   ============================================================ */
+
+/* Makes the form container occupy the full width and 
+   nearly the entire viewport height */
+.container-fluid.bg-white {
+    max-width: 100% !important;  /* Ensures full width */
+    min-height: 91vh;            /* Visible screen height */
+    margin: 0 !important;        /* No external margins */
+}
+
+/* ============================================================
+   STEPS (STEPPER)
+   ============================================================ */
+
+/* General styles for the step circles */
+.step-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;             /* Makes the element circular */
+  z-index: 10;
+  font-weight: bold;
+  transition: all 0.5s ease-in-out; /* Smooth transition for state changes */
+  background-color: #f8f9fa;
+  border: 2px solid #adb5bd;
+}
+
+/* Numeric text inside the circle */
+.step-number {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+/* Active state for the current step */
+.step-circle.active {
+  background-color: rgba(255, 193, 7, 0.2); /* Soft yellow background */
+  border-color: #ffc107;                    /* Yellow border */
+  position: relative;
+  transform: scale(1.1);                    /* Slight visual scale increase */
+}
+
+/* Number color when the step is active */
+.step-circle.active .step-number {
+  color: #ffc107;
+}
+
+/* Completed state for steps */
+.step-circle.completed {
+  background-color: #28a745; /* Green background */
+  border-color: #28a745;
+}
+
+/* White number text for completed steps */
+.step-circle.completed .step-number {
+  color: #fff;
+}
+
+/* Descriptive label positioned under each step */
+.step-label {
+  position: absolute;
+  top: 55px;
+  text-align: center;
+  white-space: nowrap;
+  transition: color 0.5s ease-in-out;
+}
+
+/* Specific positioning for labels based on their order */
+.d-flex > .step-label:nth-of-type(1) {
+  left: -55px;
+}
+.d-flex > .step-label:nth-of-type(2) {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.d-flex > .step-label:nth-of-type(3) {
+  right: -55px;
+}
+
+/* Background progress line between steps */
+.progress {
+  height: 4px;
+  position: absolute;
+  width: 100%;
+}
+
+/* Progress bar that fills up as the user advances */
+.progress-bar {
+  background-color: #28a745 !important; /* Green */
+  transition: width 0.5s ease-in-out;
+}
+
+/* Main wrapper for step components */
+.step-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Spacing between the circle and the text label */
+.step-label {
+  margin-top: 5px;
+}
+
+/* ============================================================
+   LOADING
+   ============================================================ */
+
+/* Centered container to display the loading spinner */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  text-align: center;
+}
+
+/* Animated circular spinner */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #e0e0e0;     /* Light gray border */
+  border-top: 6px solid #3f51b5; /* Blue top border for rotation effect */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+/* Continuous rotation animation for the spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================================
+   ACCORDION
+   ============================================================ */
+
+/* Customizes Bootstrap accordion headers */
+.accordion-button {
+  background-color: #198754; /* Bootstrap Green */
+  color: white; 
+  font-weight: bold;
+}
+
+/* Expanded (open) state for accordion buttons */
+.accordion-button:not(.collapsed) {
+  background-color: #198754; 
+  color: white;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+}
+
+/* Removes focus outline/shadow */
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+
+/* Style for the inner content area of the accordion */
+.accordion-body {
+  background-color: #f8f9fa; 
+}
+
+/* White arrow icon for the open accordion */
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' ... %3e") !important;
+}
+
+/* White arrow icon for the closed accordion */
+.accordion-button.collapsed::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' ... %3e") !important;
+}
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
+/* Customizes inputs and textareas for a consistent look */
+.form-control, 
+input[type="text"], 
+input[type="email"], 
+input[type="number"], 
+textarea {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+/* Visual effect when an input is focused */
+.form-control:focus, 
+input:focus, 
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0,123,255,0.25);
+  outline: none;
+}
+
+/* Styles for placeholder text */
+::placeholder {
+  color: #999;
+  font-size: 14px;
+}
+
+/* ============================================================
+   SELECT
+   ============================================================ */
+
+/* Customizes the <select> dropdown element */
+.custom-select {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  appearance: none;               /* Hides native browser arrow */
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 16px;
+  transition: all 0.3s ease;
+}
+
+/* Border color change on hover */
+.custom-select:hover {
+  border-color: #999;
+}
+
+/* Focus state styles for select */
+.custom-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0,123,255,0.25);
+}
+
+/* Styles for options within the select dropdown */
+.custom-select option {
+  padding: 12px 16px;
+  font-size: 15px;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Hover and focus effects for options in the dropdown menu */
+.custom-select option:hover,
+.custom-select option:focus {
+  background-color: #f1f5f9;
+  color: #007bff;
+}
+
+/* ============================================================
+   DRAG & DROP
+   ============================================================ */
+
+/* Main zone for file uploads via drag and drop */
+.upload-container {
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  padding: 20px 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+  max-width: 1100px;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Active state when a file is being dragged over the container */
+.upload-container.dragging {
+  border-color: #007bff;
+  background-color: #e6f2ff;
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Icon size and spacing inside the upload container */
+.upload-container .icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+/* Default color for the icon */
+.upload-container .icon i {
+  color: #007bff;
+}
+
+/* Success icon color (green) when upload is complete */
+.upload-container .icon.success i {
+  color: #28a745;
+}
+
+/* Informative text styles for the upload area */
+.upload-container p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Highlighted text style (e.g., "Click here") */
+.upload-container .highlight {
+  color: #007bff;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Display styles for the name of the uploaded file */
+.upload-container .file-name {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Layout for success or error feedback messages */
+.success-container, .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Success text color */
+.success-container {
+  color: green;
+}
+
+/* Error text color */
+.error-container {
+  color: red;
+}
+
+/* Icon sizes for feedback states */
+.checkmark, .error-icon {
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+/* ============================================================
+   BADGES & CHIPS
+   ============================================================ */
+
+/* Notification badge (small counter) used on icon elements */
+.badge-notification {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  font-size: 0.75rem;
+  padding: 3px 6px;
+  min-width: 18px;
+}
+
+/* Chip/Pill style for tags or categories */
+.chip {
+  background: #198754;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ============================================================
+   BUSINESS MODEL CANVAS (BMC) CONTAINER
+   ============================================================ */
+
+/* Main container for the canvas layout */
+.bmc-container {
+  background-color: #fdfdfd;
+  padding: 1.8rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Individual card styling for each BMC block */
+.bmc-card {
+  min-height: 150px;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* Hover effect for BMC cards */
+.bmc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+/* Title styling for each individual BMC card */
+.bmc-card h5 {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2d2d2d;
+  margin-bottom: 0.75rem;
+}
+
+/* ============================================================
+   BMC BLOCK COLORS (Top Border)
+   ============================================================ */
+
+/* Customer Relationships color */
+.color-relaciones {
+  border-top: 4px solid #009688;
+}
+
+/* Customer Segments color */
+.color-segmentos {
+  border-top: 4px solid #3f51b5;
+}
+
+/* Value Proposition color */
+.color-propuesta {
+  border-top: 4px solid #ff9800;
+}
+
+/* Key Activities color */
+.color-actividades {
+  border-top: 4px solid #8bc34a;
+}
+
+/* Key Resources color */
+.color-recursos {
+  border-top: 4px solid #673ab7;
+}
+
+/* Key Partners color */
+.color-partners {
+  border-top: 4px solid #2196f3;
+}
+
+/* Channels color */
+.color-canales {
+  border-top: 4px solid #6d4c41;
+}
+
+/* Cost Structure color */
+.color-costos {
+  border-top: 4px solid #e91e63;
+}
+
+/* Revenue Streams color */
+.color-ingresos {
+  border-top: 4px solid #4caf50;
+}
+
+/* ============================================================
+   MISCELLANEOUS
+   ============================================================ */
+
+/* Clickable item for viability checks */
+.viability-item {
+  cursor: pointer;
+}
+
+/* Hover effect for viability items */
+.viability-item:hover {
+  background-color: #f8f9fa;
+}

@@ -1,0 +1,180 @@
+/* ==========================================================================
+   1. GENERAL CONTAINER & TYPOGRAPHY
+   Main wrapper styles and text overflow safety rules.
+   ========================================================================== */
+.cards-container {
+  width: 100%;
+  max-width: 1200px;
+  background: #f6f2f2;
+  padding: 25px 20px;
+  margin-bottom: 40px;
+  border-radius: 20px;
+}
+
+/* Ensures text never overflows its container and balances line lengths */
+.cards-container h2,
+.cards-container p {
+  word-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* ==========================================================================
+   2. GRID SYSTEM & RESPONSIVENESS
+   Manages card alignment, spacing, and mobile behavior.
+   ========================================================================== */
+
+/* Removes default link styling and ensures the anchor behaves as a block */
+.cards-container .row > a {
+  text-decoration: none;
+  display: block;
+}
+
+/* Mobile adjustments: Columns take 100% width on screens smaller than 768px */
+@media (max-width: 768px) {
+  .cards-container .row > * {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* Flexbox configuration for the card row */
+.cards-container .row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; 
+  gap: 20px; /* Space between cards */
+}
+
+/* Column sizing: Minimum 300px width, expanding up to 350px */
+.cards-container .row > div {
+  flex: 1 1 300px; 
+  max-width: 350px; 
+  display: flex;
+  justify-content: center;
+}
+
+/* Ensures the flip card occupies the full width of its grid column */
+.flip-card {
+  width: 100%; 
+}
+
+/* ==========================================================================
+   3. FLIP CARD LOGIC & ANIMATION
+   Handles the 3D rotation effect and card face styling.
+   ========================================================================== */
+.flip-card {
+  width: 100%;
+  height: 190px; /* Fixed height for visual consistency */
+  perspective: 1000px; /* Creates the 3D depth effect for the flip */
+  margin-bottom: 10px;
+}
+
+/* The inner container that actually performs the rotation */
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+/* Trigger rotation on hover */
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Shared styles for Front and Back faces */
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* Hides the reverse side during the flip */
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Subtle lift effect on hover */
+.flip-card-front:hover,
+.flip-card-back:hover {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* Initial state for the back face (flipped 180 degrees) */
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Icon sizing within cards */
+.flip-card-front i,
+.flip-card-back i {
+  font-size: 3rem !important;
+  line-height: 1;
+}
+
+/* ==========================================================================
+   4. NAVIGATION & SPACING TWEAKS
+   General layout fixes for rows and the navbar.
+   ========================================================================== */
+.row {
+  gap: 10px; 
+  overflow: visible; /* Essential so the 3D flip isn't clipped */
+}
+
+.container,
+.container-fluid {
+  width: 100%;
+}
+
+/* Prevents navbar button text from wrapping into two lines */
+.navbar .btn {
+  white-space: nowrap;
+}
+
+/* Optional extra transitions for smoother movement */
+.flip-card-front {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.flip-card-back {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ==========================================================================
+   5. SIDEBAR (OFFCANVAS) STYLES
+   Customizing the slide-out menu appearance and interactions.
+   ========================================================================== */
+.offcanvas {
+  width: 280px !important; /* Sidebar width */
+}
+
+.list-group-item {
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #444;
+}
+
+/* Hover effect for sidebar items: light green background and slide-in padding */
+.list-group-item:hover {
+  background-color: #f0fdf4 !important; 
+  color: #198754; 
+  padding-left: 2rem; 
+}
+
+.list-group-item i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+/* Removes the heavy focus outline from navbar buttons */
+.navbar .btn:focus {
+  box-shadow: none;
+}

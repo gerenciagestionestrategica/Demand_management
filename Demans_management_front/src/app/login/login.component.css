@@ -1,0 +1,117 @@
+/* ======================================================
+   General background and main container
+   Centers the login content vertically and horizontally
+====================================================== */
+.login-container {
+  display: flex;
+  flex-direction: column; /* Stack title on top and login box below */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f3f4f6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ======================================================
+   Main application title
+   Displayed above the login box
+====================================================== */
+.app-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #2f855a; /* Elegant green tone */
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* ======================================================
+   Login container box
+   Holds the login content and Google button
+====================================================== */
+.login-box {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* ======================================================
+   Application logo styles
+====================================================== */
+.logo img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 1rem;
+}
+
+/* ======================================================
+   Internal login title
+====================================================== */
+.login-box h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+/* ======================================================
+   Subtitle text below the internal title
+====================================================== */
+.subtitle {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+/* ======================================================
+   Google login button wrapper
+   Centers the Google Sign-In button
+====================================================== */
+.google-btn {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+/* ======================================================
+   Session status message
+   Displays login state information
+====================================================== */
+.session-state {
+  margin-top: 1rem;
+  color: #2f855a;
+  font-weight: 500;
+}
+
+/* ======================================================
+   Logout button styles
+====================================================== */
+.logout-btn {
+  margin-top: 0.8rem;
+  background: #e53e3e;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+/* ======================================================
+   Logout button hover effect
+====================================================== */
+.logout-btn:hover {
+  background: #c53030;
+}
+
+/* ======================================================
+   Footer section
+====================================================== */
+.footer {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: #aaa;
+}

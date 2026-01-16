@@ -1,0 +1,581 @@
+
+<!-- Main container: Body of the page-->
+<div class="dashboard-content">
+
+    <!-- ===== Filters ===== -->
+    <div class="card shadow-sm border- rounded-4 mb-3 p-3 bg-white">
+        <div class="row g-3 align-items-end">
+
+            <!-- FILTROS -->
+            <div class="col-12 col-md-3">
+                <label class="form-label fw-semibold text-secondary">Rol: </label>
+                <select class="form-select" [(ngModel)]="roleFiltro">
+                    <option value="">Todos</option>
+                    <option value="Vicepresidente">Vicepresidente</option>
+                    <option value="Gerente">Gerente</option>
+                    <option value="Metodos">Metodos</option>
+                    <option value="Radicador">Radicador</option>
+                   
+                </select>
+            </div>
+
+            <div class="col-12 col-md-3">
+                <label class="form-label fw-semibold text-secondary">Buscar (Nombre o correo): </label>
+                <input type="text" class="form-control" [(ngModel)]="busqueda" placeholder="Número o palabra clave" />
+            </div>
+
+            <div class="col-12 col-md-3">
+                <label class="form-label fw-semibold text-secondary">Estado: </label>
+                <select class="form-select" [(ngModel)]="estadoFiltro">
+                    <option value="">Todos</option>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div>
+
+            
+
+            <!-- BOTÓN AGREGAR -->
+            <div class="col-12 col-md-3 text-md-end">
+                <button class="btn btn-warning mt-3 mt-md-0 px-4 fw-semibold"
+                        (click)="abrirOtroModal('modalAgregar')">
+                    <i class="bi bi-person-plus-fill me-2"></i>Agregar usuario
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== Table ===== -->
+    <div *ngIf="!cargando; else cargandoSpinner">
+        <div class="table-container shadow-sm rounded-4 bg-white">
+            <div class="table-wrapper">
+
+                <table class="table align-middle table-hover mb-0">
+                    <thead class="table-light text-center sticky-header">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Vicepresidencia</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let u of usersFiltrado; let i = index" class="align-middle text-center">
+                            <td>{{ i + 1 }}</td>
+                            <td class="fw-semibold">{{ u.name }}</td>
+                            <td>{{ u.correo || 'N/A' }}</td>
+                            <td>{{ u.role }}</td>
+
+                            <td>
+                                <span class="badge rounded-pill px-3 py-2 border"
+                                    [ngClass]="{
+                                        'bg-success text-dark': u.estado === 'Activo',
+                                        'bg-danger text-dark': u.estado === 'Inactivo'
+                                    }">
+                                    {{ u.estado }}
+                                </span>
+                            </td>
+                            <td>{{ u.vicepresidencia }}</td>
+
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            (click)="abrirModalEditar(u)">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            (click)="abrirModalEliminar(u)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+    <ng-template #cargandoSpinner>
+        <div class="text-center mt-5">
+        <div class="spinner-border text-success" role="status"></div>
+        <p class="mt-3 text-muted">Cargando información...</p>
+        </div>
+    </ng-template>
+</div>
+
+<!-- Modal: Add user -->
+<div class="modal fade" id="modalAgregar" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 shadow">
+
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-person-plus me-2"></i>Agregar Usuario
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                @if (successMessage()) {
+                    <!--  messages seccion -->
+                    <div class="d-flex flex-column align-items-center justify-center py-5">
+                        <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                            [ngClass]="{
+                                'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                                'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                            }">
+                            
+                            <!-- conditional icon -->
+                            @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                                <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                                <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                            } @else {
+                                <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                                <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                                <button 
+                                    type="button" 
+                                    class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                                    (click)="reiniciarModal()"
+                                >
+                                        <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                                    
+                                </button>
+
+                            }
+                            
+                            
+                            
+                        </div>
+                    </div>
+
+                } @else {
+
+                    <!-- Body with the information -->
+                    <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control mb-3" [(ngModel)]="nuevoUsuario.name">
+
+                    <label class="form-label">Correo</label>
+                    <input type="email" class="form-control mb-3" [(ngModel)]="nuevoUsuario.correo">
+
+                    <label class="form-label">Rol</label>
+                    <select class="form-select mb-3" [(ngModel)]="nuevoUsuario.role">
+                        <option value="Vicepresidente">Vicepresidente</option>
+                        <option value="Gerente">Gerente</option>
+                        <option value="Metodos">Metodos</option>
+                        <option value="Radicador">Radicador</option>
+                    </select>
+
+                    <label class="form-label">Estado</label>
+                    <select class="form-select mb-3" [(ngModel)]="nuevoUsuario.estado">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        
+                    </select>
+
+                    <label class="form-label">Vicepresidencia</label>
+                    <select class="form-select mb-3" [(ngModel)]="nuevoUsuario.vicepresidencia">
+                        <option value="Tecnologia">Tecnologia</option>
+                        <option value="Servicio y Operaciones">Servicio y Operaciones</option>
+                        <option value="Planeación y Riesgo">Planeación y Riesgo</option>
+                        <option value="N/A">N/A</option>
+                        
+                    </select>
+
+                }
+
+            </div>
+
+
+            <div class="col-12">
+                <div class="modal-footer-custom d-flex justify-content-between align-items-center">
+                <div>
+                    
+
+                    <!-- Dinamic buttom -->
+                    <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                    @if (!successMessage()) {
+                        <button 
+                            type="button" 
+                            class="btn px-4 fw-semibold transition duration-300" 
+                            (click)="guardarNuevoUsuario()"
+                            [disabled]="isLoading()"
+                            [ngClass]="{
+                                'btn-success': !isLoading(),
+                                'btn-secondary': isLoading()
+                            }">
+                            
+                            @if (isLoading()) {
+                                <span class="d-flex align-items-center">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Guardando...
+                                </span>
+                            } @else {
+                                <i class="bi bi-check2-circle me-1"></i> Guardar
+                            }
+                        </button>
+                    }
+                    
+                </div>
+                </div>
+            </div>
+
+           
+
+        </div>
+    </div>
+</div>
+
+
+<!-- ====== Modal: Eliminate user  ====== -->
+<div class="modal fade" id="modalEliminar" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-danger text-white py-3 px-4">
+          <h5 class="modal-title fw-bold d-flex align-items-center">
+              <i class="bi bi-tools me-2 fs-4"></i> Eliminar Usuario
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" (click) = "reiniciarModal()"></button>
+      </div>
+
+      
+      <div class="modal-body px-4" >
+
+          @if (successMessage()) {
+              <!-- messages section -->
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      <!-- conditional icon -->
+                      @if (successMessage() === '¡Eliminación del usuario completada!') {
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+
+          } @else {
+                
+
+                <!-- Body with the information -->
+                <div class="mb-3">
+                    <p>
+                        Se procederá a la <strong>ELIMINACIÓN</strong> del usuario <strong>{{userSelected.name}}</strong>. Esta acción es irreversible.
+                    </p>
+
+                    <p class="mt-2">
+                        <strong>¿Confirma que desea continuar?</strong>
+                    </p>
+                </div>
+              
+          }
+
+      </div>
+
+
+      <div class="col-12">
+        <div class="modal-footer-custom d-flex justify-content-between align-items-center">
+          <div>
+            
+
+            <!-- Dinamic buttom-->
+            @if (!successMessage()) {
+                <button 
+                    type="button" 
+                    class="btn px-4 fw-semibold transition duration-300" 
+                    (click)="eliminateUser(userSelected.id)"
+                    [disabled]="isLoading()"
+                    [ngClass]="{
+                        'btn-danger': !isLoading(),
+                        'btn-secondary': isLoading()
+                    }">
+                    
+                    @if (isLoading()) {
+                        <span class="d-flex align-items-center">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Eliminando...
+                        </span>
+                    } @else {
+                        <i class="bi bi-send-check me-1"></i> Eliminar Usuario
+                    }
+                </button>
+            }
+            
+          </div>
+        </div>
+      </div>
+    
+
+    </div>
+  </div>
+</div>
+
+<!-- ====== Modal: Edit user  ====== -->
+<div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-success text-white py-3 px-4">
+          <h5 class="modal-title fw-bold d-flex align-items-center">
+              <i class="bi bi-tools me-2 fs-4"></i> Editar Usuario
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" (click) = "reiniciarModal()"></button>
+      </div>
+
+ 
+      <div class="modal-body px-4">
+
+          @if (successMessage()) {
+              <!-- messages section -->
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      <!-- Icono condicional -->
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+
+          } @else {
+
+              <!-- Body with the information -->
+              <label class="form-label">Nombre</label>
+                    <input type="text" class="form-control mb-3" [(ngModel)]=" userSelectedEdit.name">
+
+                    <label class="form-label">Correo</label>
+                    <input type="email" class="form-control mb-3" [(ngModel)]=" userSelectedEdit.correo">
+
+                    <label class="form-label">Rol</label>
+                    <select class="form-select mb-3" [(ngModel)]=" userSelectedEdit.role">
+                        <option value="Vicepresidente">Vicepresidente</option>
+                        <option value="Gerente">Gerente</option>
+                        <option value="Metodos">Metodos</option>
+                        <option value=Radicador>Radicador</option>
+                    </select>
+
+                    <label class="form-label">Estado</label>
+                    <select class="form-select mb-3" [(ngModel)]=" userSelectedEdit.estado">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                        
+                    </select>
+
+                    <label class="form-label">Vicepresidencia</label>
+                    <select class="form-select mb-3" [(ngModel)]="userSelectedEdit.vicepresidencia">
+                        <option value="Tecnologia">Tecnologia</option>
+                        <option value="Servicio y Operaciones">Servicio y Operaciones</option>
+                        <option value="Planeación y Riesgo">Planeación y Riesgo</option>
+                        <option value="Mercadeo y Relacionamiento">Mercadeo y Relacionamiento</option>
+                        <option value="N/A">N/A</option>
+                        
+                    </select>
+
+              
+          }
+
+      </div>
+    
+
+
+      <div class="col-12">
+        <div class="modal-footer-custom d-flex justify-content-between align-items-center">
+          <div>
+            
+
+            <!-- Dinamic buttom -->
+            <button class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+            @if (!successMessage()) {
+                <button 
+                    type="button" 
+                    class="btn px-4 fw-semibold transition duration-300" 
+                    (click)="updateUser()"
+                    [disabled]="isLoading()"
+                    [ngClass]="{
+                        'btn-success': !isLoading(),
+                        'btn-secondary': isLoading()
+                    }">
+                    
+                    @if (isLoading()) {
+                        <span class="d-flex align-items-center">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Enviando...
+                        </span>
+                    } @else {
+                        <i class="bi bi-send-check me-1"></i> Actualizar datos
+                    }
+                </button>
+            }
+            
+          </div>
+        </div>
+      </div>
+    
+
+    </div>
+  </div>
+</div>
+
+<!-- ====== Modal: Display details ====== -->
+<div class="modal fade" id="modalDetalles" tabindex="-1" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-success text-white py-3 px-4">
+          <h5 class="modal-title fw-bold d-flex align-items-center">
+              <i class="bi bi-tools me-2 fs-4"></i> Solicitar ajustes
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" (click) = "reiniciarModal()"></button>
+      </div>
+
+
+      
+      <div class="modal-body px-4" >
+
+          @if (successMessage()) {
+              <!-- Messages section -->
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      <!-- conditional icon -->
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+
+          } @else {
+            >
+              <!-- Body with the information -->
+              <div class="mb-3">
+                  <p>
+                      Se realizará la <strong>ACEPTACIÓN</strong> para el radicado 
+                      <strong></strong>, correspondiente al proyecto 
+                      <strong></strong>.
+                  </p>
+                  <p class="mt-2">
+                      Recuerda que, al generar esta solicitud, el estado del radicado cambiará a 
+                      <strong class="text-success">"Aprobado"</strong> y terminara el proceso del radicado por completo.
+                      
+                  </p>
+                  <p class="mt-2">
+                      ¿Está seguro?
+                  </p>
+              </div>
+
+              
+          }
+
+      </div>
+
+
+     
+      <div class="col-12">
+        <div class="modal-footer-custom d-flex justify-content-between align-items-center">
+          <div>
+            
+
+            <!-- Dinamic button -->
+            @if (!successMessage()) {
+                <button 
+                    type="button" 
+                    class="btn px-4 fw-semibold transition duration-300" 
+                    
+                    [disabled]="isLoading()"
+                    [ngClass]="{
+                        'btn-success': !isLoading(),
+                        'btn-secondary': isLoading()
+                    }">
+                    
+                    @if (isLoading()) {
+                        <span class="d-flex align-items-center">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Enviando...
+                        </span>
+                    } @else {
+                        <i class="bi bi-send-check me-1"></i> Aceptar
+                    }
+                </button>
+            }
+            
+          </div>
+        </div>
+      </div>
+    
+
+    </div>
+  </div>
+</div>
+

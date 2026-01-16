@@ -1,0 +1,12 @@
+# Directorios y archivos de desarrollo
+.git
+.vscode
+node_modules
+dist
+npm-debug.log
+.env
+
+# Archivos de caché y temporales
+tmp
+temp
+.cache

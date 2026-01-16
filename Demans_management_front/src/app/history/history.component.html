@@ -1,0 +1,1478 @@
+<!-- ===== Main container: History of the Drafst===== -->
+<div *ngIf="authService.hasAnyRole(['Metodos', 'Gerente', 'Vicepresidente','Administrador','Radicador','Visitante'])" class="Metodos-user container-fluid ">
+  <div class="dashboard-wrapper" *ngIf="authService.hasAnyRole(['Metodos', 'Gerente', 'Vicepresidente','Administrador','Radicador','Visitante'])">
+
+    <div class="dashboard-content container-fluid">
+
+      <!-- ====== Summary cards ====== -->
+      <div class="row row-cols-3 row-cols-md-5 g-3 mb-3 text-center">
+          <div class="col" *ngFor="let card of [
+              { label: 'Radicados', value: countDf['Radicado'] || 0, status: 'Radicado', color: 'secondary', bg: 'bg-secondary-subtle' },
+              { label: 'En revisión', value:  countDf['En revisión'] || 0, status: 'En revisión', color: 'warning', bg: 'bg-warning-subtle' },
+              { label: 'Pendientes de ajustes', value:  countDf['Pendiente de ajustes'] || 0, status: 'Pendiente de ajustes', color: 'info', bg: 'bg-info-subtle' },
+              { label: 'Rechazados', value:  countDf['Rechazado'] || 0, status: 'Rechazado', color: 'danger', bg: 'bg-danger-subtle' },
+              { label: 'Aprobados', value:  countDf['Aprobado'] || 0, status: 'Aprobado', color: 'success', bg: 'bg-success-subtle' },
+              ]">
+              
+              <div 
+                  class="card shadow-sm border-0 rounded-4 h-100 {{ card.bg }}"
+                  [class.selected-card]="selectedStatuses.includes(card.status)"
+                  (click)="toggleFilter(card.status)" 
+                  style="cursor: pointer;"
+              >
+                  <div class="card-body py-3 d-flex flex-column justify-content-center">
+                      <h6 class="fw-bold text-{{ card.color }} mb-1">{{ card.label }}</h6>
+                      <h2 class="fw-bolder mb-0">{{ card.value }}</h2>
+                  </div>
+              </div>
+          </div>
+      </div>
+      
+
+      <!-- ====== Filters ====== -->
+      <div class="card shadow-sm border- rounded-4 mb-3 p-3 bg-white ">
+        <div class="row g-3 align-items-end">
+          
+          <div class="col-12 col-md-4">
+            <label class="form-label fw-semibold text-secondary">Buscar (Nombre o ID)</label>
+            <input type="text" class="form-control" [(ngModel)]="busquedaNombreId" placeholder="Número o palabra clave" />
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label fw-semibold text-secondary">Fecha de inicio</label>
+            <input type="date" class="form-control" [(ngModel)]="fechaFiltroInicio" />
+          </div>
+          <div class="col-12 col-md-4">
+            <label class="form-label fw-semibold text-secondary">Fecha de fin</label>
+            <input type="date" class="form-control" [(ngModel)]="fechaFiltroFin" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ====== Main information table ====== -->
+      <div *ngIf="!cargando; else cargandoSpinner">
+        <div class="table-container shadow-sm rounded-4 bg-white  border-1" style="border-color: #a8b6a8 !important;">
+          <div class="table-wrapper">
+            <table class="table align-middle table-hover mb-0">
+              <thead class="table-light text-center sticky-header" >
+                <tr >
+                  <th>#</th>
+                  <th>ID</th>
+                  <th >Proyecto</th>
+                  <th>Solicitante</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of historialFiltrado; let i = index" class="align-middle text-center">
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ r.id || 'N/A' }}</td>
+                  <td class="fw-semibold">{{ r.nombre_proyecto }}</td>
+                  <td>{{ r.correo}}</td>
+                  <td>{{ r.fechaRadicacion }}</td>
+                  <td>
+                    <span
+                      class="badge rounded-pill px-3 py-2 border"
+                      [ngClass]="{
+                        'bg-success text-dark': r.estado === 'Aprobado',
+                        'bg-secondary text-white': r.estado === 'Radicado',
+                        'bg-warning text-dark': r.estado === 'En revisión',
+                        'bg-info text-dark': r.estado === 'Pendiente de ajustes',
+                        'bg-primary text-dark': r.estado === 'Aprobacion preliminar',
+                        'bg-danger text-white': r.estado === 'Rechazado'
+                      }"
+                    >
+                      {{ r.estado }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center gap-2">
+                      <button
+                        class="btn btn-sm btn-outline-success"
+                        (click)="mostrarDetalles(r.id)"
+                        
+                      >
+                        <i class="bi bi-eye"></i>
+                      </button>
+                      
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="historialFiltrado.length === 0" class="text-center text-muted mt-5">
+          <i class="bi bi-inbox display-5"></i>
+          <p class="mt-3">No se encontraron iniciativas con los filtros aplicados.</p>
+        </div>
+      </div>
+
+
+      <ng-template #cargandoSpinner>
+        <div class="text-center mt-5">
+          <div class="spinner-border text-success" role="status"></div>
+          <p class="mt-3 text-muted">Cargando información...</p>
+        </div>
+      </ng-template>
+
+    </div>
+  </div>
+</div>
+
+
+ <!-- ====== Details Modal ====== -->
+<div class="modal fade" id="modalDetalles" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalDetallesLabel" aria-hidden="true" >
+       
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+
+      <!-- ====== Details or changes history button ====== -->
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-info-circle-fill me-2"></i>Detalles de la radicación
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarModal('modalDetalles')"></button>
+
+
+      </div>
+
+      <div class="bg-light border-bottom d-flex justify-content-center gap-3 py-2">
+        <button
+          class="btn"
+          [ngClass]="selectedTab === 'detalle' ? 'btn-success text-white' : 'btn-outline-success'"
+          (click)="cambiarVista('detalle')">
+          <i class="bi bi-card-text me-1"></i> Información de detalle
+        </button>
+
+        <button
+          class="btn"
+          [ngClass]="selectedTab === 'historial' ? 'btn-success text-white' : 'btn-outline-success'"
+          (click)="cambiarVista('historial')">
+          <i class="bi bi-clock-history me-1"></i> Historial de cambios
+        </button>
+      </div>
+      <div class="modal-body">
+
+
+      <div *ngIf="!registroSeleccionado">
+          <div class="text-center mt-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-3 text-muted">Cargando información...</p>
+          </div>
+      </div>
+
+        <!-- Body: Details button -->
+        <div *ngIf="selectedTab === 'detalle' && registroSeleccionado">
+
+          <!--  General information -->
+          <div class="row g-3 mb-4 ps-5 ">
+              <h3 class="fw-bold text-center text-success mb-3 ">Información general</h3>
+              
+              <div class="col-md-6 ps-5 px-3">
+                <p><strong>Número de radicación:</strong> {{ registroSeleccionado.id }}</p>
+                <p><strong>Nombre del proyecto:</strong> {{ registroSeleccionado.nombre_proyecto }}</p>
+                <p><strong>PO:</strong> {{ registroSeleccionado.po }}</p>
+                <p><strong>Tribu:</strong> {{ registroSeleccionado.tribu}}</p>
+                <p><strong>PO de tribu:</strong> {{ registroSeleccionado.pot }}</p>
+                <p><strong>VP sponsor:</strong> {{ registroSeleccionado.vp_sponsor }}</p>
+                
+
+              </div>
+              <div class="col-md-6 ps-5">
+                <p><strong>Fecha de radicación:</strong> {{ formatFecha(registroSeleccionado.createdAt) }}</p>
+                <p><strong>Estado:</strong> {{ registroSeleccionado.estado }}</p>
+                <p><strong>Squad:</strong> {{ registroSeleccionado.squad }}</p>
+                <p><strong>Fecha de inicio:</strong> {{ registroSeleccionado.start_date | date:'d \'de\' MMMM \'de\' y' }}</p>
+                <p><strong>Fecha de fin:</strong> {{ registroSeleccionado.end_date | date:'d \'de\' MMMM \'de\' y' }}</p>
+                <p><strong>Duración del proyecto (Días):</strong> {{ registroSeleccionado.cantidad_dias }}</p>
+              </div>
+          </div>
+
+          <!--  Adiccional information (situation to be resolved and scope) -->
+          <div class="accordion mb-4 px-5 ms-4">
+
+            <div class="accordion-item shadow-sm rounded-4">
+
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button fw-bold accordion-success"
+                  [class.collapsed]="!infoExtraOpen"
+                  type="button"
+                  (click)="toggleInfoExtra()">
+
+                  Información adicional del proyecto
+                </button>
+              </h2>
+
+              <div
+                class="accordion-collapse collapse"
+                [class.show]="infoExtraOpen">
+
+                <div class="accordion-body">
+                  <p>
+                    <strong>Situación a resolver:</strong>
+                    {{ registroSeleccionado?.situacion_resolver }}
+                  </p>
+
+                  <p class="mt-4">
+                    <strong>Alcance:</strong>
+                    {{ registroSeleccionado?.alcance }}
+                  </p>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+
+          <!--  Business Model Canvas -->
+          <div class="bg-light p-4 rounded-4 shadow-sm">
+            <h3 class="fw-bold text-center text-success mb-1">Business model canvas</h3>
+            <p class="text-muted text-center mb-4">Visualiza las respuestas del lienzo de modelo de negocio</p>
+            <div class="container-fluid bg-light py-4" style="max-width: 1400px;">
+                  <div class="row g-3">
+                      <!-- Bloque general reutilizable -->
+                      <div class="col-md-3">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">7. Aliados clave</h5>
+                          <div class="mb-2">
+                              <p class="fw-semibold mb-1">¿Quiénes son tus socios?</p>
+                              <p class="text-secondary small mb-2">{{ registroSeleccionado.aliados_q1|| '—' }}</p>
+                          </div>
+                          <div class="mb-2">
+                              <p class="fw-semibold mb-1">¿Con quién puedes establecer alianzas beneficiosas?</p>
+                              <p class="text-secondary small mb-2">{{ registroSeleccionado.aliados_q2 || '—' }}</p>
+                          </div>
+                          <div>
+                              <p class="fw-semibold mb-1">¿Qué actividades realizan y qué haces tú por ellos?</p>
+                              <p class="text-secondary small">{{ registroSeleccionado.aliados_q3|| '—' }}</p>
+                          </div>
+                          </div>
+                      </div>
+                      </div>
+
+                      <!-- 5. Actividades clave -->
+                      <div class="col-md-3">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">5. Actividades clave</h5>
+                          <p class="fw-semibold mb-1">¿Cuáles son las acciones clave para entregar valor?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.actividades_q1|| '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Qué es lo más fundamental de tu proceso?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.actividades_q2 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+
+                      <!-- 1. Propuesta de valor -->
+                      <div class="col-md-3">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">1. Propuesta de valor</h5>
+                          <p class="fw-semibold mb-1">¿Qué problema del cliente resuelves?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.propuesta_q1 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Qué obtiene el cliente?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.propuesta_q2 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Qué hace tu proyecto único?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.propuesta_q3 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+
+                      <!-- 3. Relación con los clientes -->
+                      <div class="col-md-3">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">3. Relación con los clientes</h5>
+                          <p class="fw-semibold mb-1">¿Qué modelo de relación tienes con tus clientes?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.relacion_q1 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Cómo la vas a iniciar y mantener?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.relacion_q2 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+
+                  <!-- Segunda fila -->
+                  <div class="row g-3 mt-2">
+                      <div class="col-md-3">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">6. Recursos clave</h5>
+                          <p class="fw-semibold mb-1">¿Qué recursos internos necesitas?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.recursos_q1 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+
+                      <div class="col-md-3">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">4. Canales de comunicación</h5>
+                          <p class="fw-semibold mb-1">¿A través de qué canales te comunicas?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.canales_q1 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Cómo entregas tu producto o servicio?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.canales_q2 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+
+                      <div class="col-md-6">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">2. Segmentos de clientes</h5>
+                          <p class="fw-semibold mb-1">¿Quiénes son tus principales clientes?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.segmentos_q1 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Qué necesitan de ti?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.segmentos_q2 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Quién paga y quién se beneficia?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.segmentos_q3 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+
+                  <!-- Tercera fila -->
+                  <div class="row g-3 mt-2">
+                      <div class="col-md-6">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">9. Estructura de gastos</h5>
+                          <p class="fw-semibold mb-1">¿Cuáles son los costos más importantes?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.gastos_q1 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Qué gastos fijos y variables vas a tener?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.gastos_q2 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Por dónde se va la plata?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.gastos_q3 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+
+                      <div class="col-md-6">
+                      <div class="card h-100 shadow-sm border-0 rounded-4">
+                          <div class="card-body">
+                          <h5 class="card-title fw-bold text-success mb-3">8. Fuentes de ingreso</h5>
+                          <p class="fw-semibold mb-1">¿Cómo generas dinero?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.ingreso_q1 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Cómo monetizas tu producto o servicio?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.ingreso_q2 || '—' }}</p>
+
+                          <p class="fw-semibold mt-2 mb-1">¿Cuál es tu modelo de ingresos?</p>
+                          <p class="text-secondary small">{{ registroSeleccionado.ingreso_q3 || '—' }}</p>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+                  </div>
+
+          </div>
+
+          <!-- Validation file-->
+          <div class="mt-5 ms-4" *ngIf="archivosPorCampo">
+            <h5 class="fw-bold text-success mb-3">
+              <i class="bi bi-folder2-open me-2"></i>Documentos del registro
+            </h5>
+
+            <div class="row g-2 ">
+              <ng-container *ngFor="let doc of documentosPosibles; let i = index">
+                <div
+                  class="col-md-6 col-lg-4"
+                  *ngIf="archivosPorCampo[doc.campo]?.urlDescarga as urlDescarga"
+                >
+                  <a
+                    [href]="urlDescarga"
+                    target="_blank"
+                    class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2"
+                  >
+                    <i class="bi bi-file-earmark-arrow-down"></i>
+                    Descargar {{ doc.label }}
+                  </a>
+                </div>
+              </ng-container>
+
+              
+              <div
+                *ngIf="sinDescargas"
+                class="text-muted ms-2 mt-3"
+              >
+                <i class="bi bi-file-earmark-x"></i> No hay archivos adjuntos
+              </div>
+            </div>
+          </div>
+
+          <!-- Business case file -->
+          <div class="mt-5 ms-4" *ngIf="archivosPorCampo"> 
+            <h5 class="fw-bold text-success mb-3">
+              <i class="bi bi-folder2-open me-2"></i>Documentos de estudio
+            </h5>
+            <div class="row g-2">
+              
+              <ng-container *ngFor="let doc of documentosPosibles2">
+
+                <div class="col-md-6 col-lg-4" *ngIf="archivosPorCampo[doc.campo]?.urlDescarga as urlDescarga">
+                  
+                  <a [href]="urlDescarga" target="_blank" class="btn btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-file-earmark-arrow-down"></i>
+                    Descargar {{ doc.label }}
+                  </a>
+                </div>
+              </ng-container>
+
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="mt-5 pt-4 border-top comments-timeline-container">
+            <h5 class="fw-bold text-primary mb-3">
+              <i class="bi bi-chat-dots me-2"></i>Observaciones y comentarios
+            </h5>
+
+            <div class="card p-4 bg-light-subtle shadow-sm rounded-4 comments-card">
+              <p class="fw-semibold mb-3 text-dark">Historial de comentarios:</p>
+
+              <ng-container *ngIf="registroSeleccionado.comentarios?.length > 0; else noComentarios">
+                            
+                  <div *ngFor="let comentario of registroSeleccionado.comentarios" 
+                      class="comentario-item bg-white rounded-3 p-3 mb-3 shadow-sm border-start border-4 border-success position-relative">
+                      
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                          <span class="fw-bold text-dark">
+                              <i class="bi bi-person-circle me-1 text-success"></i>
+                              {{ comentario.userId || 'Anónimo' }} * {{ comentario.tipoSolicitud || 'Anónimo' }}
+                          </span>
+                          <small class="text-muted fst-italic">
+                              {{ formatFecha(comentario.fecha) || 'Sin fecha' }}
+                          </small>
+                      </div>
+
+                      <p class="mb-0 text-secondary small">
+                          {{ comentario.comentarioAjuste }}
+                      </p>
+
+                  </div>
+
+              </ng-container>
+
+              <ng-template #noComentarios>
+                <div class="text-center text-muted small py-3">
+                  <i class="bi bi-inbox me-1"></i> Aún no hay observaciones registradas para esta radicación.
+                </div>
+              </ng-template>
+            </div>
+          </div>
+
+           <!-- Action buttons by roles -->
+          <div class="col-12">
+            <div class="modal-footer-custom d-flex justify-content-between align-items-center">
+              
+              <!-- left Buttons (Metodos, Gerentes y Vicepresidente)-->
+              <div class="d-flex gap-2" *ngIf="((authService.hasAnyRole(['Metodos']) && registroSeleccionado.estadoAjustesPendientes === 'Desactivado' && registroSeleccionado.estado === 'Radicado') 
+                                              || (authService.hasAnyRole(['Gerente']) && registroSeleccionado.estadoAjustesPendientes === 'Desactivado' && registroSeleccionado.estado === 'En revisión'&& !yaRespondioGerente('Gerente'))
+                                              || ( authService.hasAnyRole(['Vicepresidente']) && registroSeleccionado.estadoAjustesPendientes === 'Desactivado' && registroSeleccionado.estado === 'En revisión' && !yaRespondioGerente('Vicepresidente') && yaPuedeVicepresidentes()))
+                                               && registroSeleccionado.estado != 'Aprobado' && registroSeleccionado.estado != 'Rechazado'">
+                <button 
+                  type="button" 
+                  class="btn btn-success px-4"
+                  (click)="abrirOtroModal('modalAceptar')">
+                  <i class="bi bi-check-circle me-1"></i> Aceptar
+                </button>
+                <button
+                  type="button" 
+                  class="btn btn-warning text-dark px-4"
+                  (click)="abrirOtroModal('modalDetallesPendiente')">
+                  <i class="bi bi-pencil-square me-1"></i> Solicitar ajustes
+                </button>
+              </div>
+
+
+                <!-- left Buttons (Administrador)-->
+              <div class="d-flex gap-2" *ngIf="authService.hasAnyRole(['Administrador'])">
+                
+                <button
+                  type="button" 
+                  class="btn btn-warning text-dark px-4 fw-semibold"
+                  (click)="abrirOtroModal('modalChangeStatus')">
+                  <i class="bi bi-arrow-left-right me-2"></i> Cambiar Estado
+                </button>
+
+                <button
+                  type="button" 
+                  class="btn btn-primary px-4 shadow-sm"
+                  (click)="abrirOtroModal('modalStatusGerente')">
+                  <i class="bi bi-person-badge me-2"></i> Estado Gerentes
+                </button>
+
+                <button
+                  type="button" 
+                  class="btn btn-info text-white px-4 shadow-sm"
+                  style="background-color: #6610f2; border-color: #6610f2;"
+                  (click)="abrirOtroModal('modalStatusVicepresidente')">
+                  <i class="bi bi-award me-2"></i> Estado Vicepresidentes
+                </button>
+                
+              </div>
+
+              
+
+              <!-- left Buttons (-->
+              <div class="d-flex gap-2" *ngIf="authService.hasAnyRole(['Radicador']) && registroSeleccionado.estado != 'Aprobado' && (registroSeleccionado.estadoAjustesPendientes === 'Gerentes' || registroSeleccionado.estadoAjustesPendientes === 'GD'  || registroSeleccionado.estadoAjustesPendientes === 'Vicepresidentes')">
+                
+                <button
+                  type="button" 
+                  class="btn btn-warning text-dark px-4"
+                  (click)="irAEditar(registroSeleccionado.id)"
+                  >
+                  <i class="bi bi-pencil-square me-1"></i> Realizar ajustes
+                </button>
+              </div>
+
+              <!--Right Button (Close) -->
+              <div>
+                <button type="button" class="btn btn-secondary px-4"  (click)="cerrarModal('modalDetalles')">
+                  <i class="bi bi-x-circle me-1"></i> Cerrar
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+
+        </div>
+
+        <!-- Body: History button -->
+        <div *ngIf="selectedTab === 'historial' && historialCambios">
+
+          <div class=" pt-4 border-top comments-timeline-container">
+
+              <h5 class="fw-bold text-success mb-3">
+                <i class="bi bi-chat-dots me-2"></i>Historial de cambios
+              </h5>
+
+              <div class="table-container shadow-sm rounded-4 bg-white  border-1" style="border-color: #a8b6a8 !important;">
+                <div class="table-wrapper">
+                  <table class="table table-hover mb-0">
+                    <thead class="table-light text-left sticky-header" >
+                      <tr>
+                        <th>#</th>
+                        <th >Fase</th>
+                        <th>Antes</th>
+                        <th>Después</th>
+                        <th>Fecha</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let cambio of historialCambios; let i = index" class="align-middle text-left">
+                        <td>{{ i + 1 }}</td>
+                        <td class="fw-semibold">{{ cambio.paso || 'Sin paso' }}</td>
+                        <td>{{ cambio.antiguo || 'N/A' }}</td>
+                        <td>{{ cambio.cambio || 'N/A' }}</td>
+                        <td>{{  formatFecha(cambio.time)  }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>  
+              </div>
+          </div>
+
+          <div *ngIf="historialCambios.length === 0" class="text-center text-muted mt-5">
+            <i class="bi bi-inbox display-5"></i>
+            <p class="mt-3">No se cuenta con cambios en el radicado.</p>
+          </div>
+        </div>
+
+    </div>  
+    </div>
+  </div>
+</div>
+
+
+<!-- ====== Adjusment Request Modal ====== -->
+<div class="modal fade" id="modalDetallesPendiente" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+    <!-- Header -->
+    <div class="modal-header bg-success text-white py-3 px-4">
+        <h5 class="modal-title fw-bold d-flex align-items-center">
+            <i class="bi bi-tools me-2 fs-4"></i> Solicitar ajustes
+        </h5>
+       <button type="button" class="btn-close" (click)="cerrarModal('modalDetallesPendiente')"></button>
+
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body px-4" *ngIf="registroSeleccionado">
+
+        <!-- The information appear according the conditional and the variable "success Message"-->
+        @if (successMessage()) {
+            
+            <div class="d-flex flex-column align-items-center justify-center py-5">
+                <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                    [ngClass]="{
+                        'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                        'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                    }">
+                    
+                    
+                    @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                        <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                        <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                    } @else {
+                        <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                        <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                        <button 
+                          type="button" 
+                          class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                          (click)="reiniciarModalSolicitud()"
+                        >
+                              <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                          
+                        </button>
+
+                    }
+                    
+                    
+                    
+                </div>
+            </div>
+
+        } @else {
+
+            <!-- Body  with the information of the Adjusment Request Modal-->
+            <div class="mb-3">
+                <p>
+                    Se realizará una <strong>solicitud de ajuste</strong> para el radicado 
+                    <strong>{{ registroSeleccionado.id }}</strong>, correspondiente al proyecto 
+                    <strong>{{ registroSeleccionado.nombre_proyecto }}</strong>.
+                </p>
+                <p class="mt-2">
+                    Recuerda que, al generar esta solicitud, el estado del radicado cambiará a 
+                    <strong class="text-success">"Pendiente de ajustes"</strong>. El usuario podrá realizar las modificaciones necesarias
+                    antes de su nueva revisión.
+                </p>
+            </div>
+
+            <!-- Request type -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label for="Tipo de Solicitud" class="form-label fw-semibold">Tipo de solicitud <span class="text-danger">*</span></label>
+                    <select 
+                        id="Tipo de Solicitud" 
+                        class="form-select rounded-3 shadow-sm"
+                        [(ngModel)]="ajustesSolicitud.tipoSolicitud">
+                        <option value="" disabled selected>Seleccione una opción</option>
+                        <option value="Cambios generales">Cambios - Generales</option>
+                        <option value="Cambios - Bussiness Model Canvas">Cambios - Bussiness Model Canvas</option>
+                        <option value="Cambios - Vulnerabilidades">Cambios - Validaciones</option>
+                        <option value="Cambios - Estimacion de detalle">Cambios - Detalles de Estimación</option>
+                        <option value="Cambios - Caso de negocio">Cambios - Caso de Negocio</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- New comment field -->
+            <div class="mt-3">
+                <label for="comentariosAjuste" class="form-label fw-semibold">
+                    Nuevas observaciones o ajustes requeridos <span class="text-danger">*</span>
+                </label>
+                <textarea
+                    id="comentariosAjuste"
+                    class="form-control rounded-3 shadow-sm"
+                    rows="4"
+                    placeholder="Ejemplo: 'Agregar un análisis de impacto financiero' o 'Corregir descripción del objetivo estratégico'"
+                    [(ngModel)]="ajustesSolicitud.comentariosAjuste"
+                    maxlength="500">
+                </textarea>
+                <div class="text-end small text-muted mt-1">
+                    {{ ajustesSolicitud.comentariosAjuste.length || 0 }}/500 caracteres
+                </div>
+            </div>
+
+            <!-- Changes history -->
+            <div class="mb-4">
+                <h6 class="fw-semibold text-primary mb-3">
+                    <i class="bi bi-chat-dots me-2"></i>Historial de comentarios anteriores
+                </h6>
+
+                <div class="bg-light rounded-4 p-3 shadow-sm" style="max-height: 250px; overflow-y: auto;">
+                    <ng-container *ngIf="registroSeleccionado.comentarios?.length > 0; else noPrevios">
+                        
+                        <div *ngFor="let comentario of registroSeleccionado.comentarios" 
+                            class="comentario-item bg-white rounded-3 p-3 mb-3 shadow-sm border-start border-4 border-success position-relative">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold text-dark">
+                                    <i class="bi bi-person-circle me-1 text-success"></i>
+                                    {{ comentario.userId || 'Anónimo' }}  * {{ comentario.tipoSolicitud || 'Anónimo' }}
+                                </span>
+                                <small class="text-muted fst-italic">
+                                    {{ formatFecha(comentario.fecha) || 'Sin fecha' }}
+                                </small>
+                            </div>
+
+                            <p class="mb-0 text-secondary small">
+                                {{ comentario.comentarioAjuste }}
+                            </p>
+
+                        </div>
+
+                    </ng-container>
+
+                    <ng-template #noPrevios>
+                        <div class="text-muted small text-center py-2">
+                            <i class="bi bi-inbox me-1"></i> No hay comentarios previos registrados.
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        }
+
+    </div>
+   
+
+    <!-- Button to send the adjusment request -->
+    <div class="modal-footer border-0 justify-content-between px-4 py-3 bg-light rounded-bottom-4">
+        
+        <button type="button" class="btn btn-outline-secondary px-4"  (click) = "cerrarModal('modalDetallesPendiente')">
+            <i class="bi bi-x-circle me-1" ></i> Cerrar
+        </button>
+        
+        <!-- Dinamic button -->
+        @if (!successMessage()) {
+            <button 
+                type="button" 
+                class="btn px-4 fw-semibold transition duration-300" 
+                (click)="sendAdjusmentRequest()"
+                [disabled]="isLoading()"
+                [ngClass]="{
+                    'btn-success': !isLoading(),
+                    'btn-secondary': isLoading()
+                }">
+                
+                @if (isLoading()) {
+                    <span class="d-flex align-items-center">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Enviando...
+                    </span>
+                } @else {
+                    <i class="bi bi-send-check me-1"></i> Enviar solicitud
+                }
+            </button>
+        }
+    </div>
+
+</div>
+</div>
+</div>
+
+
+<!-- ====== Accept Modal ====== -->
+<div class="modal fade" id="modalAceptar" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-success text-white py-3 px-4">
+          <h5 class="modal-title fw-bold d-flex align-items-center">
+              <i class="bi bi-tools me-2 fs-4"></i> Aceptar radicado
+          </h5>
+          <button type="button" class="btn-close" (click)="cerrarModal('modalAceptar')"></button>
+
+      </div>
+
+      <!-- Body: View of Metodos -->
+      <div class="modal-body px-4" *ngIf="authService.hasAnyRole(['Metodos']) && registroSeleccionado && registroSeleccionado.estado != 'Aprobacion preliminar'">
+  
+          <!-- The information appear according the conditional and the variable "success Message"-->
+          @if (successMessage()) {
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+          } @else {
+            <!-- Body  with the information of the Acept Modal-->
+              <div class="mb-3">
+                  <p>
+                      Se realizará la <strong>ACEPTACIÓN</strong> para el radicado 
+                      <strong>{{ registroSeleccionado.id }}</strong>, correspondiente al proyecto 
+                      <strong>{{ registroSeleccionado.nombre_proyecto }}</strong>.
+                  </p>
+                  <p class="mt-2">
+                      Recuerda que, al generar esta solicitud, el estado del radicado cambiará a 
+                      <strong class="text-success">"En revisión"</strong> y continuará el proceso con la revisión de los Gerentes y/o Vicepresidentes.
+                      
+                  </p>
+                  <p class="mt-2">
+                      ¿Está seguro?
+                  </p>
+              </div>
+          }
+
+      </div>
+
+      <!-- Body: View of Vicepresidentes -->
+      <div class="modal-body px-4" *ngIf="(authService.hasAnyRole(['Vicepresidente']) && registroSeleccionado && registroSeleccionado.estado == 'En revisión')">
+
+          <!-- The information appear according the conditional and the variable "success Message"-->
+          @if (successMessage()) {
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      <!-- Icono condicional -->
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+          } @else {
+              <!-- Body  with the information of the Acept Modal-->
+              <div class="mb-3">
+                  <p>
+                      Se realizará la <strong>ACEPTACIÓN</strong> para el radicado 
+                      <strong>{{ registroSeleccionado.id }}</strong>, correspondiente al proyecto 
+                      <strong>{{ registroSeleccionado.nombre_proyecto }}</strong>.
+                  </p>
+                  <p class="mt-2">
+                      Recuerda que, al generar esta solicitud, el estado del radicado cambiará a 
+                      <strong class="text-success">"Aprobado"</strong> y terminara el proceso del radicado por completo.
+                      
+                  </p>
+                  <p class="mt-2">
+                      ¿Está seguro?
+                  </p>
+              </div>  
+          }
+
+      </div>
+
+      <!-- Body: View of Gerentes-->
+      <div class="modal-body px-4" *ngIf="authService.hasAnyRole(['Gerente']) && registroSeleccionado && registroSeleccionado.estado == 'En revisión'">
+
+          <!-- The information appear according the conditional and the variable "success Message"-->
+          @if (successMessage()) {
+              
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+
+                  </div>
+              </div>
+
+          } @else {  
+              <!-- Body  with the information of the Acept Modal-->       
+              <div class="mb-3">
+                  <p>
+                      Se realizará la <strong>ACEPTACIÓN</strong> para el radicado 
+                      <strong>{{ registroSeleccionado.id }}</strong>, correspondiente al proyecto 
+                      <strong>{{ registroSeleccionado.nombre_proyecto }}</strong>.
+                  </p>
+                  <p class="mt-2">
+                    Recuerda que, para que el radicado cambie de estado, todos los gerentes deben haber completado el proceso de aceptación y/o solicitado los ajustes correspondientes.
+                    Una vez todos hayan aceptado, el estado cambiará a <strong class="text-success">"En revisión"</strong> o <strong class="text-success">"Aprobado"</strong>, momento en el cual se mira si el proceso del radicado debe continuar con los Vicepresidentes o si puede finalizar.
+                  </p>
+                  <p class="mt-2">
+                    ¿Está seguro?
+                  </p>
+
+              </div> 
+          }
+
+      </div>
+
+
+    
+
+      <!-- Botton to send the request -->
+      <div class="col-12">
+        <div class="modal-footer-custom d-flex justify-content-between align-items-center">
+          <div>
+            
+
+            <!-- Dinamic button -->
+            @if (!successMessage()) {
+                <button 
+                    type="button" 
+                    class="btn px-4 fw-semibold transition duration-300" 
+                    (click)="approveInitiative()"
+                    [disabled]="isLoading()"
+                    [ngClass]="{
+                        'btn-success': !isLoading(),
+                        'btn-secondary': isLoading()
+                    }">
+                    
+                    @if (isLoading()) {
+                        <span class="d-flex align-items-center">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Enviando...
+                        </span>
+                    } @else {
+                        <i class="bi bi-send-check me-1"></i> Aceptar
+                    }
+                </button>
+            }
+            
+          </div>
+        </div>
+      </div>
+    
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ====== Request of change status ====== -->
+<div class="modal fade" id="modalChangeStatus" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-success text-white py-3 px-4">
+          <h5 class="modal-title fw-bold d-flex align-items-center">
+              <i class="bi bi-tools me-2 fs-4"></i> Aceptar radicado
+          </h5>
+          <button type="button" class="btn-close" (click)="cerrarModal('modalChangeStatus')"></button>
+
+      </div>
+
+      <!-- Body: View of Metodos -->
+      <div class="modal-body px-4" *ngIf="authService.hasAnyRole(['Administrador']) && registroSeleccionado">
+  
+          <!-- The information appear according the conditional and the variable "success Message"-->
+          @if (successMessage()) {
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+          } @else {
+            <!-- Body  with the information of the Acept Modal-->
+              <div class="mb-3">
+                  <p>
+                      Se realizará el <strong>CAMBIO</strong> de estado del resgistro
+                      <strong>{{ registroSeleccionado.id }}</strong>, correspondiente al proyecto 
+                      <strong>{{ registroSeleccionado.nombre_proyecto }}</strong>.
+                  </p>
+                  <p class="mt-2">
+                      Recuerda que, al generar esta solicitud, el estado del radicado cambiará acorde a lo que solicite y el radicado continuara su flujo normal 
+                      desde ese mismo punto en el que este siguiendo la siguiente convención:
+                  </p>
+                  <p class="mt-2">
+                      <strong>Radicado</strong>: Quedara en el punto de espera a la supervision por Gestion de la Demanda.
+                  </p>
+                  <p class="mt-2">
+                      <strong>En revisión</strong>: Quedara en el punto de espera a la supervision de los Gerentes.
+                  </p>
+                  <p class="mt-2">
+                      <strong>Rechazado</strong>: Se rechaza el proyecto definitivamente.
+                  </p>
+                  <p class="mt-2">
+                      <strong>Aprobado</strong>: Se Aprueba  el proyecto definitivamente.
+                  </p>
+
+
+
+                  <p class="mt-2">
+                      Selecciones el estado a actualizar:
+                  </p>
+
+                  <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="Tipo de Solicitud" class="form-label fw-semibold">Estados <span class="text-danger">*</span></label>
+                        <select 
+                            id="Tipo de Solicitud" 
+                            class="form-select rounded-3 shadow-sm"
+                            [(ngModel)]="statusUpdate">
+                            <option value="" disabled selected>Seleccione una opción</option>
+                            <option value="Radicado">Radicado</option>
+                            <option value="En revisión">En revisión</option>
+                            <option value="Rechazado">Rechazado</option>
+                            <option value="Aprobado">Aprobado</option>
+                        </select>
+                    </div>
+                </div>
+
+                  <p class="mt-2">
+                      ¿Está seguro?
+                  </p>
+              </div>
+          }
+
+      </div>
+
+      
+      <!-- Botton to send the request -->
+      <div class="col-12">
+        <div class="modal-footer-custom d-flex justify-content-between align-items-center">
+          <div>
+            
+
+            <!-- Dinamic button -->
+            @if (!successMessage()) {
+                <button 
+                    type="button" 
+                    class="btn px-4 fw-semibold transition duration-300" 
+                    (click)="updateStatus()"
+                    [disabled]="isLoading()"
+                    [ngClass]="{
+                        'btn-success': !isLoading(),
+                        'btn-secondary': isLoading()
+                    }">
+                    
+                    @if (isLoading()) {
+                        <span class="d-flex align-items-center">
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Enviando...
+                        </span>
+                    } @else {
+                        <i class="bi bi-send-check me-1"></i> Aceptar
+                    }
+                </button>
+            }
+            
+          </div>
+        </div>
+      </div>
+    
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ====== Request of status Gerentes  ====== -->
+<div class="modal fade" id="modalStatusGerente" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-success text-white py-3 px-4">
+          <h5 class="modal-title fw-bold d-flex align-items-center">
+              <i class="bi bi-tools me-2 fs-4"></i> Estado de revisión de los Gerentes
+          </h5>
+          <button type="button" class="btn-close" (click)="cerrarModal('modalStatusGerente')"></button>
+
+      </div>
+
+      <!-- Body-->
+      <div class="modal-body px-4" *ngIf="authService.hasAnyRole(['Administrador']) && registroSeleccionado">
+  
+          <!-- The information appear according the conditional and the variable "success Message"-->
+          @if (successMessage()) {
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+          } @else {
+            <!-- Body  with the information of the Acept Modal-->
+            <div class="mb-3">
+              <div class="pt-4 border-top comments-timeline-container">
+
+                <h5 class="fw-bold text-success mb-3">
+                  <i class="bi bi-chat-dots me-2"></i>Estado de los gerentes
+                </h5>
+
+
+                <div class="table-container shadow-sm rounded-4 bg-white  border-1" style="border-color: #a8b6a8 !important;">
+                  <div class="table-wrapper">
+                    <table class="table table-hover mb-0">
+                       <thead class="table-light text-left sticky-header" >
+                        <tr>
+                          <th>#</th>
+                          <th>Nombre</th>
+                          <th>Email</th>
+                          <th>Estado</th>
+                          <th class="text-center">Acciones</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr
+                          *ngFor="let gerente of registroSeleccionado.aprobacionGerentes; let i = index"
+                          class="align-middle text-left"
+                        >
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ gerente.name }}</td>
+                          <td>{{ gerente.correo }}</td>
+
+                          <!-- ===== status column ===== -->
+                          <td>
+                            <!-- normal mode -->
+                            <span *ngIf="!gerente.editando">
+                              {{ gerente.estado }}
+                            </span>
+
+                            <!-- edicition mode -->
+                            <select
+                              *ngIf="gerente.editando"
+                              class="form-select form-select-sm"
+                              [(ngModel)]="gerente.estadoTemp"
+                            >
+                              <option value="En revisión">En revisión</option>
+                              <option value="Aprobado">Aprobado</option>
+                              
+                            </select>
+                          </td>
+
+                          <!-- ===== actions ===== -->
+                          <td class="text-center">
+
+                            <!-- edit -->
+                            <button
+                              *ngIf="!gerente.editando && gerente.estado != 'Aprobado'"
+                              class="btn btn-sm btn-outline-primary me-2"
+                              (click)="editGerente(gerente)"
+                            >
+                              <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <!-- eliminate -->
+                            <button
+                              *ngIf="!gerente.editando && gerente.estado != 'Aprobado'"
+                              class="btn btn-sm btn-outline-danger"
+                              (click)="eliminateStatusGerenteDraft(gerente.correo)"
+                            >
+                              <i class="bi bi-trash"></i>
+                            </button>
+
+                            <!-- acept / cancel -->
+                            <div *ngIf="gerente.editando">
+                              <button
+                                class="btn btn-sm btn-outline-success me-2"
+                                (click)="updateStatusGerenteDraft(gerente)"
+                              >
+                                <i class="bi bi-check-lg"></i>
+                              </button>
+
+                              <button
+                                class="btn btn-sm btn-outline-secondary"
+                                (click)="cancelChangeGerente(gerente)"
+                              >
+                                <i class="bi bi-x-lg"></i>
+                              </button>
+                            </div>
+
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ewhere there noy gerentes -->
+              <div
+                *ngIf="!registroSeleccionado.aprobacionGerentes || registroSeleccionado.aprobacionGerentes.length === 0"
+                class="text-center text-muted mt-5"
+              >
+                <i class="bi bi-inbox display-5"></i>
+                <p class="mt-3">No se cuenta con gerentes asignados para la aprobación.</p>
+              </div>
+            </div>
+
+          }
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ====== Request of status Vicepresidentes====== -->
+<div class="modal fade" id="modalStatusVicepresidente" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalDetallesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-success text-white py-3 px-4">
+          <h5 class="modal-title fw-bold d-flex align-items-center">
+              <i class="bi bi-tools me-2 fs-4"></i> Estado de revisión de los vicepresidentes
+          </h5>
+          <button type="button" class="btn-close" (click)="cerrarModal('modalStatusVicepresidente')"></button>
+
+      </div>
+
+      <!-- Body-->
+      <div class="modal-body px-4" *ngIf="authService.hasAnyRole(['Administrador']) && registroSeleccionado">
+  
+          <!-- The information appear according the conditional and the variable "success Message"-->
+          @if (successMessage()) {
+              <div class="d-flex flex-column align-items-center justify-center py-5">
+                  <div class="mt-4 p-5 rounded-lg font-semibold text-center transition-all duration-300 ease-in-out w-full max-w-md"
+                      [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-300': successMessage() === '¡Solicitud enviada correctamente!',
+                          'bg-red-100 text-red-700 border border-red-300': successMessage() && successMessage()?.startsWith('Error:')
+                      }">
+                      
+                      
+                      @if (successMessage() === '¡Solicitud enviada correctamente!') {
+                          <i class="bi bi-check-circle-fill text-success fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                      } @else {
+                          <i class="bi bi-x-octagon-fill text-danger fs-1 mb-3 d-block"></i>
+                          <p class="mb-0 fs-5">{{ successMessage() }}</p>
+                          <button 
+                            type="button" 
+                            class="btn-reintentar px-4 fw-semibold transition duration-300" 
+                            (click)="reiniciarModal()"
+                          >
+                                <i class="bi bi-send-check me-1"></i> Intentar nuevamente
+                            
+                          </button>
+
+                      }
+                      
+                      
+                      
+                  </div>
+              </div>
+          } @else {
+            <!-- Body  with the information of the Acept Modal-->
+            <div class="mb-3">
+              <div class="pt-4 border-top comments-timeline-container">
+
+                <h5 class="fw-bold text-success mb-3">
+                  <i class="bi bi-chat-dots me-2"></i>Estado de los vicepresidentes
+                </h5>
+
+
+                <div class="table-container shadow-sm rounded-4 bg-white  border-1" style="border-color: #a8b6a8 !important;">
+                  <div class="table-wrapper">
+                    <table class="table table-hover mb-0">
+                       <thead class="table-light text-left sticky-header" >
+                        <tr>
+                          <th>#</th>
+                          <th>Nombre</th>
+                          <th>Email</th>
+                          <th>Estado</th>
+                          <th class="text-center">Acciones</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr
+                          *ngFor="let vicepresidente of registroSeleccionado.aprobacionVices; let i = index"
+                          class="align-middle text-left"
+                        >
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ vicepresidente.name }}</td>
+                          <td>{{ vicepresidente.correo }}</td>
+
+                          <!-- ===== status column ===== -->
+                          <td>
+                            <!-- normal mode -->
+                            <span *ngIf="!vicepresidente.editando">
+                              {{ vicepresidente.estado }}
+                            </span>
+
+                            <!-- edit mode -->
+                            <select
+                              *ngIf="vicepresidente.editando"
+                              class="form-select form-select-sm"
+                              [(ngModel)]="vicepresidente.estadoTemp"
+                            >
+                              <option value="En revisión">En revisión</option>
+                              <option value="Aprobado">Aprobado</option>
+                              
+                            </select>
+                          </td>
+
+                          <!-- ===== actions ===== -->
+                          <td class="text-center">
+
+                            <!-- edit -->
+                            <button
+                              *ngIf="!vicepresidente.editando && vicepresidente.estado != 'Aprobado'"
+                              class="btn btn-sm btn-outline-primary me-2"
+                              (click)="editVicepresident(vicepresidente)"
+                            >
+                              <i class="bi bi-pencil"></i>
+                            </button>
+
+                            <!-- eliminate -->
+                            <button
+                              *ngIf="!vicepresidente.editando && vicepresidente.estado != 'Aprobado'"
+                              class="btn btn-sm btn-outline-danger"
+                              (click)="eliminateStatusVicepresidentDraft(vicepresidente.correo)"
+                            >
+                              <i class="bi bi-trash"></i>
+                            </button>
+
+                            <!-- acept / cancel -->
+                            <div *ngIf="vicepresidente.editando">
+                              <button
+                                class="btn btn-sm btn-outline-success me-2"
+                                (click)="updateStatusVicepresidentDraft(vicepresidente)"
+                              >
+                                <i class="bi bi-check-lg"></i>
+                              </button>
+
+                              <button
+                                class="btn btn-sm btn-outline-secondary"
+                                (click)="cancelChangeVicepresident(vicepresidente)"
+                              >
+                                <i class="bi bi-x-lg"></i>
+                              </button>
+                            </div>
+
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CUANDO NO HAY GERENTES -->
+              <div
+                *ngIf="!registroSeleccionado.aprobacionVices || registroSeleccionado.aprobacionVices.length === 0"
+                class="text-center text-muted mt-5"
+              >
+                <i class="bi bi-inbox display-5"></i>
+                <p class="mt-3">No se cuenta con gerentes asignados para la aprobación.</p>
+              </div>
+            </div>
+
+          }
+
+      </div>
+
+    
+    </div>
+  </div>
+</div>
+
+
+

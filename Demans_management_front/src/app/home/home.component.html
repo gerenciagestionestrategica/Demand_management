@@ -1,0 +1,275 @@
+<div class="container my-1 text-center mt-3">
+    <h2 class="fw-bold">Bienvenido a Demand Flow</h2>
+    <h6 style="font-size: 20px;" class="mt-1 mb-0"> Plataforma de gestión de la demanda</h6>
+    <p class="lead text-muted">Una solución diseñada para mejorar rendimiento, organización y colaboración.</p>
+</div>
+
+
+<div class="container mb-3">
+  <div class="d-flex justify-content-center"> 
+    
+    <div class="border rounded shadow-sm p-2 d-flex flex-wrap justify-content-center" style="max-width: 1000px;"> 
+      
+      <div class="col-12 col-sm-6 col-lg-3 p-1">
+        <div class="card py-2 px-3 text-center h-100" style="border: none;"> 
+          <i class="bi bi-file-earmark-text fs-3 text-success"></i>
+          <h6 style="font-size: 13px;" class="mt-1 mb-0">Reduce tiempos y automatiza tareas repetitivas.</h6>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3 p-1">
+        <div class="card py-2 px-3 text-center h-100" style="border: none;">
+          <i class="bi bi-file-earmark-bar-graph fs-3 text-warning"></i>
+          <h6 style="font-size: 13px;" class="mt-1 mb-0">Visualiza el estado de tus actividades sin retrasos.</h6>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3 p-1">
+        <div class="card py-2 px-3 text-center h-100" style="border: none;">
+          <i class="bi bi-wallet2 fs-3 text-success"></i>
+          <h6 style="font-size: 13px;" class="mt-1 mb-0">Acceso rápido y seguro a la información de los radicados.</h6>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-3 p-1">
+        <div class="card py-2 px-3 text-center h-100" style="border: none;">
+          <i class="bi bi-clipboard2-plus fs-3 text-warning"></i>
+          <h6 style="font-size: 13px;" class="mt-1 mb-0">Comunicación y coordinación en un solo lugar.</h6>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Visitante user -->
+<div *ngIf="authService.hasAnyRole(['Visitante'])" class="visitante-user">
+
+  <!-- Options cards -->
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="cards-container rounded-4 shadow-sm">
+
+      <div class="text-center pt-0 px-4 pb-4">
+        <h4 class="fw-bold text-success">Menú principal</h4>
+        <p class="text-muted mb-0">Elige una de las siguientes opciones para continuar.</p>
+      </div>
+
+      <div class="row justify-content-center g-4">
+
+        <!-- Card 1 -->
+        <div class="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
+          <a [routerLink]="['/history']" class="text-decoration-none w-100">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front bg-warning text-dark">
+                  <i class="bi bi-journal-text fs-3 mb-3"></i>
+                  <h5>Historial de radicación</h5>
+                </div>
+                <div class="flip-card-back bg-light text-dark text-center">
+                  <p>Accede al historial completo de radicaciones donde podrás revisar cada solicitud enviada, verificar su estado de avance y consultar la información asociada.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        
+
+     </div>
+    </div>
+ </div>
+</div>
+
+
+<!-- Radicador user -->
+<div *ngIf="authService.hasAnyRole(['Radicador'])" class="common-user">
+
+  <!-- Options cards -->
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="cards-container rounded-4 shadow-sm">
+
+      <div class="text-center pt-0 px-4 pb-4">
+        <h4 class="fw-bold text-success">Menú principal</h4>
+        <p class="text-muted mb-0">Elige una de las siguientes opciones para continuar.</p>
+      </div>
+
+      <div class="row justify-content-center g-4">
+
+        <!-- Card 1 -->
+        <div class="col-lg-4 col-md-4 col-sm-12 d-flex justify-content-center">
+          <a [routerLink]="['/form']" class="text-decoration-none w-100">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front bg-success text-white">
+                  <i class="bi bi-file-earmark-text fs-3 mb-3"></i>
+                  <h5>Crear nuevo anteproyecto</h5>
+                </div>
+                <div class="flip-card-back bg-light text-dark text-center">
+                  <p>Radica un nuevo anteproyecto desde cero: describe la idea, objetivos, metodología propuesta y recursos necesarios y demas informacion de detalle de tu iniciativa.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-lg-4 col-md-4 col-sm-12 d-flex justify-content-center">
+          <a [routerLink]="['/history']" class="text-decoration-none w-100">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front bg-warning text-dark">
+                  <i class="bi bi-journal-text fs-3 mb-3"></i>
+                  <h5>Historial de radicación</h5>
+                </div>
+                <div class="flip-card-back bg-light text-dark text-center">
+                  <p>Accede al historial completo de radicaciones donde podrás revisar cada solicitud enviada, verificar su estado de avance y consultar la información asociada.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-lg-4 col-md-4 col-sm-12 d-flex justify-content-center">
+          <a [routerLink]="['/calculator']" class="text-decoration-none w-100">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front bg-primary text-white">
+                  <i class="bi bi-calculator fs-3 mb-3"></i>
+                  <h5>Calculadora</h5>
+                </div>
+                <div class="flip-card-back bg-light text-dark text-center">
+                  <p>Realiza estimaciones y genera proyecciones de los costos asociados a los proyectos que serán radicados en la plataforma, facilitando su planeación y evaluación.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+
+     </div>
+    </div>
+ </div>
+</div>
+
+
+<!-- Metodos user, Gerente user, Vicepresidente user -->
+<div *ngIf="authService.hasAnyRole(['Metodos', 'Gerente', 'Vicepresidente'])" class="others-user">
+
+  <!-- Options cards -->
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="cards-container rounded-4 shadow-sm">
+
+      <div class="text-center pt-3 px-4 pb-4">
+        <h2 class="fw-bold text-success">Menú principal</h2>
+        <p class="text-muted mb-0">Elige una de las siguientes opciones para continuar.</p>
+      </div>
+
+      <div class="row justify-content-center g-5">
+
+        <!-- Card 1 -->
+        <a [routerLink]="['/history']" class="col-lg-5 col-md-6 text-decoration-none">
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front bg-warning text-dark">
+                <i class="bi bi-journal-text fs-1 mb-3"></i>
+                <h5>Historial de radicación</h5>
+              </div>
+              <div class="flip-card-back bg-light text-dark  text-center">
+                <p>Accede al historial completo de radicaciones donde podrás revisar cada solicitud enviada, verificar su estado de avance y consultar la información asociada.</p>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card 2 -->
+        <a [routerLink]="['/history']" class="col-lg-5 col-md-6 text-decoration-none">
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <div class="flip-card-front bg-primary text-white">
+                <i class="bi bi-calculator fs-1 mb-3"></i>
+                <h5>Calculadora</h5>
+              </div>
+              <div class="flip-card-back bg-light text-dark  text-center">
+                <p>Realiza estimaciones y genera proyecciones de los costos asociados a los proyectos que serán radicados en la plataforma, facilitando su planeación y evaluación.</p>
+              </div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Administrador user -->
+<div *ngIf="authService.hasAnyRole(['Administrador'])" class="administrador-user">
+  
+  <!-- Options cards -->
+  <div class="container-fluid d-flex justify-content-center">
+    <div class="cards-container rounded-4 shadow-sm">
+
+      <div class="text-center pt-3 px-4 pb-4">
+        <h2 class="fw-bold text-success">Menú principal</h2>
+        <p class="text-muted mb-0">Elige una de las siguientes opciones para continuar.</p>
+      </div>
+
+      <div class="row justify-content-center g-4">
+
+        <!-- Card 1 -->
+        <div class="col-lg-4 col-md-4 col-sm-12 d-flex justify-content-center">
+          <a [routerLink]="['/usuario']" class="text-decoration-none w-100">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front bg-success text-white">
+                  <i class="bi bi-file-earmark-text fs-3 mb-3"></i>
+                  <h5>Usuarios</h5>
+                </div>
+                <div class="flip-card-back bg-light text-dark text-center">
+                  <p>Administra de manera integral los usuarios de la plataforma. Aquí puedes crear nuevos usuarios, editar información existente y eliminar usuarios según los permisos y necesidades de tu organización.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-lg-4 col-md-4 col-sm-12 d-flex justify-content-center">
+          <a [routerLink]="['/history']" class="text-decoration-none w-100">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front bg-warning text-dark">
+                  <i class="bi bi-journal-text fs-3 mb-3"></i>
+                  <h5>Historial de radicación</h5>
+                </div>
+                <div class="flip-card-back bg-light text-dark text-center">
+                  <p>Accede al historial completo de radicaciones donde podrás revisar cada solicitud enviada, verificar su estado de avance y consultar la información asociada.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-lg-4 col-md-4 col-sm-12 d-flex justify-content-center">
+          <a [routerLink]="['/info-form']" class="text-decoration-none w-100">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-front bg-primary text-white">
+                  <i class="bi bi-calculator fs-3 mb-3"></i>
+                  <h5>Información del formulario</h5>
+                </div>
+                <div class="flip-card-back bg-light text-dark text-center">
+                 <p>Gestiona y actualiza todas las variables y campos que los usuarios ven en el formulario. Aquí puedes modificar información existente, agregar nuevos campos y asegurar que todos los datos sean correctos.</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

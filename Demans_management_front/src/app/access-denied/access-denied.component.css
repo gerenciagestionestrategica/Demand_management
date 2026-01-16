@@ -1,0 +1,30 @@
+/* Sets a fixed, narrow width for the sidebar, overriding the default Bootstrap size. */
+.offcanvas {
+  width: 280px !important;
+}
+
+/* Cleans up the base item design: removes borders, adjusts font weight, and enables smooth transitions. */
+.list-group-item {
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #444;
+}
+
+/* Handles hover interaction: changes background to light green and slides the text to the right. */
+.list-group-item:hover {
+  background-color: #f0fdf4 !important;
+  color: #198754;
+  padding-left: 2rem;
+}
+
+/* Adjusts icon sizing and ensures they are vertically centered with the adjacent text. */
+.list-group-item i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+/* Removes the default focus shadow (glow) from the navbar toggle button for a cleaner UI. */
+.navbar .btn:focus {
+  box-shadow: none;
+}

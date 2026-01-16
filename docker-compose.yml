@@ -1,0 +1,47 @@
+services:
+  backend:
+    build: ./Demand-management--Back
+    container_name: backend
+    ports:
+      - ${PORT_BACK}:${PORT_BACK}
+    environment:
+      PORT_BACK: ${PORT_BACK}
+      FIREBASE_BUCKET: ${FIREBASE_BUCKET}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      SECRET_KEY: ${SECRET_KEY}
+      SECRET_KEY_N8N: ${SECRET_KEY_N8N}
+      PORT_ACEPT: ${PORT_ACEPT}
+      API_KEY_N8N: ${API_KEY_N8N}
+      API_KEY_N8N_IA: ${API_KEY_N8N_IA}
+      TYPE: ${TYPE}
+      PROJECT_ID: ${PROJECT_ID}
+      PRIVATE_KEY_ID: ${PRIVATE_KEY_ID}
+      PRIVATE_KEY: ${PRIVATE_KEY}
+      CLIENT_EMAIL: ${CLIENT_EMAIL}
+      CLIENT_ID: ${CLIENT_ID}
+      AUTH_URI: ${AUTH_URI}
+      TOKEN_URI: ${TOKEN_URI}
+      AUTH_PROVIDER_X509_CERT_URL: ${AUTH_PROVIDER_X509_CERT_URL}
+      CLIENT_X509_CERT_URL: ${CLIENT_X509_CERT_URL}
+      UNIVERSE_DOMAIN: ${UNIVERSE_DOMAIN}
+    networks:
+      - my-network
+
+  frontend:
+    build: ./Demand-management--Front-1
+    container_name: frontend
+    ports:
+      - "80:80"
+    environment:
+      FRONT_PORT: ${FRONT_PORT}
+      API_URL: ${API_URL}
+      CLIENT_ID_GOOGLE: ${CLIENT_ID_GOOGLE}
+    depends_on:
+      - backend
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

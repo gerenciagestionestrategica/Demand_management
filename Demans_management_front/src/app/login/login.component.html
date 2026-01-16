@@ -1,0 +1,29 @@
+<div class="login-container">
+  <!-- top title -->
+  <h1 class="app-title">Gestión de la Demanda</h1>
+
+  <div class="login-box">
+    <!-- Logo -->
+    <div class="logo">
+      <img 
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+        alt="Google Logo">
+    </div>
+
+    <!-- Title -->
+    <h2>Bienvenido</h2>
+    <p class="subtitle">Inicia sesión con tu cuenta de Google</p>
+
+    <!-- Here google use the botton -->
+    <div id="googleBtn" class="google-btn"></div>
+
+    <!-- State: This appears depending on whether the user is logged in -->
+    <div *ngIf="isLoggedIn()" class="session-state">
+      <p>✅ Estás logueado</p>
+      <button (click)="logout()" class="logout-btn">Cerrar sesión</button>
+    </div>
+
+    <!-- Footer -->
+    <p class="footer">© Gestión de la demanda.</p>
+  </div>
+</div>

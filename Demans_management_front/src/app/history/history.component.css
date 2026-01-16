@@ -1,0 +1,655 @@
+/* ==========================================================================
+   TIMELINE (GENERAL)
+   --------------------------------------------------------------------------
+   Vertical timeline used in history and activity sections
+   ========================================================================== */
+
+.timeline {
+  position: relative;
+  margin-left: 35px;
+  padding-left: 30px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #198754;
+  opacity: 0.25;
+  border-radius: 2px;
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -3px;
+  top: 26px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #198754;
+  border: 3px solid #e8f5ee;
+  z-index: 1;
+  box-shadow: 0 0 0 3px #ffffff;
+}
+
+.timeline-content {
+  margin-left: 30px;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  transition: all 0.3s ease;
+  border: 1px solid #edf1f3;
+}
+
+.timeline-content:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ==========================================================================
+   SCROLLABLE HISTORY / TIMELINE CONTAINER
+   ========================================================================== */
+
+.historial-scrollable {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 15px;
+  scrollbar-width: thin;
+}
+
+.historial-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.historial-scrollable::-webkit-scrollbar-thumb {
+  background-color: rgba(25, 135, 84, 0.3);
+  border-radius: 6px;
+}
+
+
+/* ==========================================================================
+   GENERAL DASHBOARD LAYOUT
+   ========================================================================== */
+
+.dashboard-content {
+  padding: 2rem 1.5rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+@media (min-width: 992px) {
+  .dashboard-content {
+    padding: 2rem 4rem;
+  }
+}
+
+
+/* ==========================================================================
+   SUMMARY CARDS
+   ========================================================================== */
+
+.dashboard-wrapper .card {
+  transition: all 0.3s ease-in-out;
+  border-radius: 1rem !important;
+  background-color: #ffffff;
+  border: 1px solid #e7ecef;
+}
+
+.dashboard-wrapper .card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-wrapper .card h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+
+/* ==========================================================================
+   FORMS / FILTERS
+   ========================================================================== */
+
+.dashboard-wrapper .card.bg-white {
+  border-radius: 1px;
+  padding: 1.5rem;
+  border: 1px solid #afb5bb;
+}
+
+.dashboard-wrapper .form-control,
+.dashboard-wrapper .form-select {
+  border-radius: 0.75rem;
+  border: 1px solid #a4aab1;
+  padding: 0.6rem 0.9rem;
+  background-color: #fefefe;
+}
+
+.dashboard-wrapper .form-control:focus,
+.dashboard-wrapper .form-select:focus {
+  border-color: #010c07;
+  box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.25);
+}
+
+
+/* ==========================================================================
+   TABLES (BASE)
+   ========================================================================== */
+
+.dashboard-wrapper .table-hover tbody tr:hover {
+  background-color: #e9f8ee;
+}
+
+.dashboard-wrapper .table td,
+.dashboard-wrapper .table th {
+  padding: 1rem 0.75rem !important;
+  vertical-align: middle;
+  border-color: #c3c9cd;
+}
+
+
+/* ==========================================================================
+   TABLE CONTAINER (DASHBOARD)
+   ========================================================================== */
+
+.dashboard-wrapper .table-container {
+  border-radius: 1rem;
+  border: 1px solid #e7ecef;
+  background-color: #ffffff;
+  padding: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.dashboard-wrapper .table-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 0.75rem;
+}
+
+.dashboard-wrapper .table-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-wrapper .table-wrapper::-webkit-scrollbar-thumb {
+  background-color: rgba(25, 135, 84, 0.35);
+  border-radius: 4px;
+}
+
+.dashboard-wrapper .table-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(25, 135, 84, 0.55);
+}
+
+
+/* ==========================================================================
+   STICKY TABLE HEADER (DASHBOARD)
+   ========================================================================== */
+
+.dashboard-wrapper .sticky-header th {
+  background-color: #32835d !important;
+  color: white !important;
+}
+
+.dashboard-wrapper .sticky-header th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f9fa;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+
+/* ==========================================================================
+   GENERIC TABLE STYLES (GLOBAL)
+   ========================================================================== */
+
+.table-container {
+  border: 1px solid #d9e2d9 !important;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b8c7b8 #f1f1f1;
+}
+
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #b8c7b8;
+  border-radius: 10px;
+}
+
+.sticky-header th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #198754 !important;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.table tbody tr {
+  background-color: white !important;
+}
+
+.table-hover tbody tr:hover {
+  background-color: white !important;
+}
+
+/*
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa !important;
+}
+*/
+
+.table td,
+.table th {
+  padding: 12px 16px;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
+.dashboard-wrapper .btn-sm {
+  border-radius: 0.6rem;
+  font-weight: 500;
+}
+
+.dashboard-wrapper .btn-outline-success:hover {
+  background-color: #198754;
+  color: white;
+}
+
+.dashboard-wrapper .btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.dashboard-wrapper .btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+
+/* ==========================================================================
+   MODALS (BASE)
+   ========================================================================== */
+
+.dashboard-wrapper .modal-content {
+  border-radius: 1.5rem !important;
+  border: none;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-wrapper .modal-header {
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+  background-color: #f8f9fa;
+}
+
+.dashboard-wrapper .modal-body {
+  padding: 2rem;
+  background-color: #ffffff;
+}
+
+.dashboard-wrapper .modal-footer {
+  background-color: #f8f9fa;
+  border-top: none;
+  padding: 1rem 1.5rem;
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+}
+
+
+/* ==========================================================================
+   CUSTOM MODAL FOOTER
+   ========================================================================== */
+
+.modal-footer-custom {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  margin-top: 1rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+  border-radius: 0 0 1rem 1rem;
+}
+
+.modal-footer-custom .btn {
+  border-radius: 0.6rem;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  min-width: 140px;
+}
+
+.modal-footer-custom .btn:hover {
+  transform: translateY(-2px);
+}
+
+.modal-footer-custom .btn-success {
+  background-color: #198754;
+  border: none;
+}
+
+.modal-footer-custom .btn-success:hover {
+  background-color: #157347;
+}
+
+.modal-footer-custom .btn-warning {
+  background-color: #ffc107;
+  border: none;
+  color: #212529;
+}
+
+.modal-footer-custom .btn-warning:hover {
+  background-color: #e0a800;
+}
+
+.modal-footer-custom .btn-secondary {
+  background-color: #6c757d;
+  border: none;
+}
+
+.modal-footer-custom .btn-secondary:hover {
+  background-color: #5c636a;
+}
+
+@media (max-width: 576px) {
+  .modal-footer-custom {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+}
+
+
+/* ==========================================================================
+   COMMENTS / TIMELINE INSIDE MODALS
+   ========================================================================== */
+
+#modalDetalles .comments-timeline-container,
+#modalDetallesPendiente .comments-timeline-container {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+}
+
+.comments-card {
+  background: #f8f9fa;
+  border-radius: 1rem;
+  padding: 1.5rem !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #adb5bd #e9ecef;
+}
+
+.comments-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comments-card::-webkit-scrollbar-thumb {
+  background-color: #adb5bd;
+  border-radius: 4px;
+}
+
+.comments-card::-webkit-scrollbar-track {
+  background: #e9ecef;
+}
+
+.timeline-list {
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-item {
+  margin-bottom: 1rem;
+}
+
+.timeline-dot {
+  display: none;
+}
+
+.timeline-content {
+  margin-left: 0;
+}
+
+.comment-bubble {
+  background: #ffffff;
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  margin-top: 0.4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  display: inline-block;
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+.timeline-content p.fw-bold {
+  color: #0d6efd;
+}
+
+#modalDetalles .comments-card,
+#modalDetallesPendiente .comments-card {
+  margin: 0 1rem !important;
+}
+
+@media (max-width: 576px) {
+  .comments-card {
+    padding: 1rem !important;
+    max-height: 250px;
+  }
+
+  .comment-bubble {
+    font-size: 0.95rem;
+  }
+}
+
+
+/* ==========================================================================
+   STATUS MESSAGES (SUCCESS / ERROR)
+   ========================================================================== */
+
+.message-box {
+  margin-top: 1rem;
+  padding: 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.bg-success-message {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.bg-error-message {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.message-box i {
+  display: block;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.message-box i:hover {
+  transform: scale(1.1);
+}
+
+.message-box p {
+  margin-bottom: 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+
+/* ==========================================================================
+   RETRY BUTTON
+   ========================================================================== */
+
+.btn-reintentar {
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #198754, #16a34a);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 18px;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 3px 6px rgba(25, 135, 84, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 1rem;
+}
+
+.btn-reintentar:hover {
+  background: linear-gradient(135deg, #16a34a, #198754);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(25, 135, 84, 0.3);
+}
+
+.btn-reintentar:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(25, 135, 84, 0.25);
+}
+
+.btn-reintentar i {
+  font-size: 1.1rem;
+  vertical-align: middle;
+}
+
+@media (max-width: 576px) {
+  .message-box {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .btn-reintentar {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* ==========================================================================
+   ACCORDION (MODAL DETAIL)
+   ========================================================================== */
+
+.accordion-button.accordion-success {
+  background-color: #198754 !important;
+  color: #fff !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.accordion-button.accordion-success:not(.collapsed) {
+  background-color: #157347 !important;
+  color: #fff !important;
+}
+
+.accordion-button.accordion-success::after {
+  color: #fff !important;
+  filter: none !important;
+}
+
+.accordion-item .accordion-button.accordion-success {
+  border-radius: 0.5rem !important;
+}
+
+.accordion#infoExtraAccordion .accordion-item .accordion-button.accordion-success {
+  background-color: #198754 !important;
+  color: #fff !important;
+}
+
+.accordion-button.accordion-success::after {
+  filter: invert(1) brightness(2) !important;
+}
+
+.accordion-button.accordion-success:not(.collapsed)::after {
+  filter: invert(1) brightness(2) !important;
+}
+
+
+/* ==========================================================================
+   SELECTED CARD STATE
+   ========================================================================== */
+
+.selected-card {
+  border: 3px solid var(--bs-secondary) !important;
+  transform: scale(1.02);
+  transition: all 0.1s ease-in-out;
+}
+
+
+/* ==========================================================================
+   SIDEBAR (OFFCANVAS)
+   ========================================================================== */
+
+.offcanvas {
+  width: 280px !important;
+}
+
+.list-group-item {
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #444;
+}
+
+.list-group-item:hover {
+  background-color: #f0fdf4 !important;
+  color: #198754;
+  padding-left: 2rem;
+}
+
+.list-group-item i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+.navbar .btn:focus {
+  box-shadow: none;
+}

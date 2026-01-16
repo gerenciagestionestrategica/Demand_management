@@ -1,0 +1,902 @@
+
+<!--Main content: Body of the edit form-->
+<div class="container-fluid p-0">
+  <div class="row full-height g-0">
+    <div class="col-8 p-4 left-content">
+      <div class="container-fluid bg-white p-5 rounded-3 shadow fullscreen-container">
+
+            <!--View of loading Page-->
+            <div *ngIf="loadPage" class="loading-container">
+              <div class="spinner"></div>
+              <p>Cargando...</p>
+            </div>
+
+            <!--View of updating data-->
+            <div *ngIf="!loadPage">
+              <div *ngIf="(currentload === 1) && ((statusLoad !=1) && (statusLoad != 0) ); else noLoad" class="loading-container">
+                <div class="spinner"></div>
+                <p>Actualizando...</p>
+              </div>
+            
+              <!--View of updating data sucessful-->
+              <ng-template #noLoad>
+
+                <div *ngIf="statusLoad === 1 ; else noWasLoad" class="loading-container">
+                  <span class="checkmark">✔</span>
+                  <p>La informacion de actualizo con éxito</p>
+                  <div class="mt-4">
+                  <button type="button" class="btn btn-warning me-3" routerLink="/home" >Regresar a la pagina principal</button>
+                  </div>
+                </div>
+                
+                <!--View of updating data error-->
+                <ng-template #noWasLoad>
+                    <div *ngIf="statusLoad === 0 ; else loadFile" class="loading-container">
+                        <span class="error-icon">✖</span>
+                        <p>No se pudo completar la actualizacion</p>
+                        <div class="mt-4">
+                          <button type="button" class="btn btn-primary me-3" (click)="updateData()" >Enviar Nuevamente</button>
+                        </div>
+                    </div>
+
+                  <!--Body: Form to update the draft-->
+                  <ng-template #loadFile>
+                      <h2 class="fw-bold text-center mb-2">Solicitud de ajustes</h2>
+                      <p class="text-muted text-center mb-4">Realiza los ajustes acorde a lo solicitado en los comentarios</p>
+
+  
+                            <h3 class="fw-bold text-center text-success mb-1">Información general</h3>
+                            <div class="row g-4 mb-4 mt-4">
+
+                              <!-- General informatión -->
+                              <div class="row">
+
+                                <div class="col-md-6 mb-3">
+                                  <label class="form-label fw-bold" for="nombre_proyecto">1. Nombre del proyecto:</label>
+                                  <input type="text" class="form-control" id="nombre_proyecto" [(ngModel)]="formData.step1.nombre_proyecto" (ngModelChange)="saveState()" name="nombre_proyecto">
+                                </div>
+
+
+                                <div class="col-md-6 mb-3">
+                                  <label class="form-label fw-bold" for="lider_negocio">2. Líder de negocio:</label>
+                                  <input type="text" class="form-control" id="lider_negocio" [(ngModel)]="formData.step1.lider_negocio" (ngModelChange)="saveState()" name="lider_negocio">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                  <label for="vp_sponsor" class="form-label fw-bold text-dark">
+                                    3. VP Sponsor:
+                                  </label>
+
+                                  <select
+                                    id="vp_sponsor"
+                                    name="vp_sponsor"
+                                    [(ngModel)]="formData.step1.vp_sponsor"
+                                    (ngModelChange)="saveState()"
+                                    class="custom-select"
+                                    required
+                                  >
+                                    <option value="" disabled hidden>Seleccione una opción</option>
+
+                                    <option *ngFor="let vp of sponsors" [value]="vp">
+                                      {{ vp }}
+                                    </option>
+                                  </select>
+                                </div>
+
+
+
+                                <div class="col-md-6 mb-3">
+                                  <label class="form-label fw-bold" for="pot">4. PO de tribu:</label>
+                                  <input type="text" class="form-control" id="pot" [(ngModel)]="formData.step1.pot" (ngModelChange)="saveState()" name="pot">
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                  <label class="form-label fw-bold" for=Radicador>5. PO:</label>
+                                  <input type="text" class="form-control" id=Radicador [(ngModel)]="formData.step1.po" (ngModelChange)="saveState()" name=Radicador>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                  <label for="tribu" class="form-label fw-bold text-dark">
+                                    6. Tribu:
+                                  </label>
+
+                                  <select
+                                    id="tribu"
+                                    name="tribu"
+                                    [(ngModel)]="formData.step1.tribu"
+                                    (ngModelChange)="saveState()"
+                                    class="custom-select"
+                                    required
+                                  >
+                                    <option value="" disabled hidden>Seleccione una opción</option>
+
+                                    <option *ngFor="let tribu of tribus" [value]="tribu">
+                                      {{ tribu }}
+                                    </option>
+                                  </select>
+                                </div>
+
+
+                                <div class="col-md-6 mb-3">
+                                  <label for="squad" class="form-label fw-bold text-dark">
+                                    7. Squad:
+                                  </label>
+
+                                  <select
+                                    id="squad"
+                                    name="squad"
+                                    [(ngModel)]="formData.step1.squad"
+                                    (ngModelChange)="saveState()"
+                                    class="custom-select"
+                                    required
+                                  >
+                                    <option value="" disabled hidden>Seleccione una opción</option>
+
+                                    <option *ngFor="let squad of squads" [value]="squad">
+                                      {{ squad }}
+                                    </option>
+                                  </select>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                  <label class="form-label fw-bold" for=Radicador>8. Fecha de inicio del proyecto: </label>
+                                  <input type="date" class="form-control" id=Radicador [(ngModel)]="formData.step1.start_date" (ngModelChange)="saveState()" name=Radicador>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">
+                                        9. Presupuesto total <span class="text-muted">(COP):</span>
+                                    </label>
+                                    <input 
+                                        type="text"
+                                        class="form-control"
+                                        [(ngModel)]="formData.step1.presupuesto"
+                                        name="presupuesto" (input)="formatCurrency($event)" maxlength="14" >
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                  <label class="form-label fw-bold" for=Radicador>Fecha de fin del proyecto: </label>
+                                  <input type="date" class="form-control" id=Radicador [(ngModel)]="formData.step1.end_date" (ngModelChange)="saveState()" name=Radicador>
+                                </div>
+
+                              </div>
+
+                              <!-- Situation to be resolved and scope-->
+                              <div class="row border-4">
+                            
+
+                                <h4 class="fw-bold mb-4 mt-5 text-success text-center">
+                                  10. Situación a resolver y alcance
+                                </h4>
+
+                                <div class="mb-4">
+                                  <label class="form-label fw-bold text-dark">
+                                    11. Situación a resolver
+                                  </label>
+
+                                  <textarea
+                                    class="form-control w-100 mb-2"
+                                    rows="4"
+                                    [(ngModel)]="formData.step1.situacion_resolver"
+                                    (ngModelChange)="saveState()"
+                                    maxlength="300">
+                                  </textarea>
+
+                                  <div class="text-end text-muted small">
+                                    {{ formData.step1.situacion_resolver.length || 0 }} / 300
+                                  </div>
+                                </div>
+
+                                <div class="mb-4">
+                                  <label class="form-label fw-bold text-dark">
+                                    12. Alcance
+                                  </label>
+
+                                  <textarea
+                                    class="form-control w-100 mb-2"
+                                    rows="4"
+                                    [(ngModel)]="formData.step1.alcance"
+                                    (ngModelChange)="saveState()"
+                                    maxlength="300">
+                                  </textarea>
+
+                                  <div class="text-end text-muted small">
+                                    {{ formData.step1.alcance.length || 0 }} / 300
+                                  </div>
+                                </div>
+
+                              
+                              </div>
+
+                            </div>
+
+                            <!-- Bussines Model Canvas-->
+                            <h3 class="fw-bold text-center text-success mb-1">Business Model Canvas</h3>
+                            <p class="text-muted text-center mb-4">Visualiza las respuestas del lienzo de modelo de negocio</p>
+                            <div class="container-fluid bg-light py-4" style="max-width: 1400px;">
+                                  <div class="row g-3">
+
+                                      <!-- Bloque general reutilizable -->
+                                      <div class="col-md-3">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                              <h5 class="card-title fw-bold text-success mb-3">7. Aliados clave</h5>
+                                              <div class="mb-2">
+                                                  <p class="fw-semibold mb-1">¿Quiénes son tus socios?</p>
+                                                  <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.aliados_q1" (ngModelChange)="saveState()" maxlength="300"></textarea> 
+                                                  <div class="text-end text-muted small">
+                                                    {{ formData.step2.aliados_q1 ? formData.step2.aliados_q1.length : 0 }} / 300
+                                                  </div>
+                                              </div>
+                                              <div class="mb-2">
+                                                  <p class="fw-semibold mb-1">¿Con quién puedes establecer alianzas beneficiosas?</p>
+                                                  <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.aliados_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                                  <div class="text-end text-muted small">
+                                                    {{ formData.step2.aliados_q2 ? formData.step2.aliados_q2.length : 0 }} / 300
+                                                  </div>
+                                              </div>
+                                              <div>
+                                                  <p class="fw-semibold mb-1">¿Qué actividades realizan y qué haces tú por ellos?</p>
+                                                  <textarea class="form-control flex-grow-1" rows="4" [(ngModel)]="formData.step2.aliados_q3" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                                  <div class="text-end text-muted small">
+                                                    {{ formData.step2.aliados_q3 ? formData.step2.aliados_q3.length : 0 }} / 300
+                                                  </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- 5. Actividades clave -->
+                                      <div class="col-md-3">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                            <h5 class="card-title fw-bold text-success mb-3" >5. Actividades clave</h5>
+                                            <p class="fw-semibold mb-1">¿Cuáles son las acciones clave para entregar valor?</p>
+                                            <textarea class="form-control flex-grow-1 mb-2" rows="8"[(ngModel)]="formData.step2.actividades_q1" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.actividades_q1 ? formData.step2.actividades_q1.length : 0 }} / 300
+                                            </div>
+
+                                            <p class="fw-semibold mt-2 mb-1">¿Qué es lo más fundamental de tu proceso?</p>
+                                            <textarea class="form-control flex-grow-1" rows="8"[(ngModel)]="formData.step2.actividades_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.actividades_q2 ? formData.step2.actividades_q2.length : 0 }} / 300
+                                            </div>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- 1. Propuesta de valor -->
+                                      <div class="col-md-3">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                            <h5 class="card-title fw-bold text-success mb-3">1. Propuesta de valor</h5>
+                                            <p class="fw-semibold mb-1">¿Qué problema del cliente resuelves?</p>
+                                            <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.propuesta_q1" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.propuesta_q1 ? formData.step2.propuesta_q1.length : 0 }} / 300
+                                            </div>
+
+                                            <p class="fw-semibold mt-2 mb-1">¿Qué obtiene el cliente?</p>
+                                            <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.propuesta_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.propuesta_q2 ? formData.step2.propuesta_q2.length : 0 }} / 300
+                                            </div>
+
+                                            <p class="fw-semibold mt-2 mb-1">¿Qué hace tu proyecto único?</p>
+                                            <textarea class="form-control flex-grow-1" rows="4" [(ngModel)]="formData.step2.propuesta_q3" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.propuesta_q3 ? formData.step2.propuesta_q3.length : 0 }} / 300
+                                            </div>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- 3. Relación con los clientes -->
+                                      <div class="col-md-3">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                            <h5 class="card-title fw-bold text-success mb-3">3. Relación con los clientes</h5>
+                                            <p class="fw-semibold mb-1">¿Qué modelo de relación tienes con tus clientes?</p>
+                                            <textarea class="form-control flex-grow-1 mb-2" rows="8"[(ngModel)]="formData.step2.relacion_q1" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.relacion_q1 ? formData.step2.relacion_q1.length : 0 }} / 300
+                                            </div>
+
+                                            <p class="fw-semibold mt-2 mb-1">¿Cómo la vas a iniciar y mantener?</p>
+                                            <textarea class="form-control flex-grow-1" rows="8"[(ngModel)]="formData.step2.relacion_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.relacion_q2 ? formData.step2.relacion_q2.length : 0 }} / 300
+                                            </div>
+                                            </div>
+                                        </div>
+                                      </div>
+                                  </div>
+
+                                  <!-- Segunda fila -->
+                                  <div class="row g-3 mt-2">
+
+                                      <!-- Recursos clave -->
+                                      <div class="col-md-3">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                            <h5 class="card-title fw-bold text-success mb-3">6. Recursos clave</h5>
+                                            <p class="fw-semibold mb-1">¿Qué recursos internos necesitas?</p>
+                                            <textarea class="form-control flex-grow-1" rows="16"[(ngModel)]="formData.step2.recursos_q1" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.recursos_q1 ? formData.step2.recursos_q1.length : 0 }} / 300
+                                            </div>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Canales de comucicación -->
+                                      <div class="col-md-3">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                            <h5 class="card-title fw-bold text-success mb-3">4. Canales de comunicación</h5>
+                                            <p class="fw-semibold mb-1">¿A través de qué canales te comunicas?</p>
+                                            <textarea class="form-control flex-grow-1 mb-2" rows="6"[(ngModel)]="formData.step2.canales_q1" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.canales_q1 ? formData.step2.canales_q1.length : 0 }} / 300
+                                            </div>
+
+                                            <p class="fw-semibold mt-2 mb-1">¿Cómo entregas tu producto o servicio?</p>
+                                            <textarea class="form-control flex-grow-1" rows="6"[(ngModel)]="formData.step2.canales_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                            <div class="text-end text-muted small">
+                                              {{ formData.step2.canales_q2 ? formData.step2.canales_q2.length : 0 }} / 300
+                                            </div>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Segmento de clientea -->
+                                      <div class="col-md-6">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                              <h5 class="card-title fw-bold text-success mb-3">2. Segmentos de clientes</h5>
+                                              <p class="fw-semibold mb-1">¿Quiénes son tus principales clientes?</p>
+                                              <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.segmentos_q1" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.segmentos_q1 ? formData.step2.segmentos_q1.length : 0 }} / 300
+                                              </div>
+
+                                              <p class="fw-semibold mt-2 mb-1">¿Qué necesitan de ti?</p>
+                                              <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.segmentos_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.segmentos_q2 ? formData.step2.segmentos_q2.length : 0 }} / 300
+                                              </div>
+
+                                              <p class="fw-semibold mt-2 mb-1">¿Quién paga y quién se beneficia?</p>
+                                              <textarea class="form-control flex-grow-1" rows="4" [(ngModel)]="formData.step2.segmentos_q3" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.segmentos_q3 ? formData.step2.segmentos_q3.length : 0 }} / 300
+                                              </div>
+                                            </div>
+                                        </div>
+                                      </div>
+                                  </div>
+
+                                  <!-- Tercera fila -->
+                                  <div class="row g-3 mt-2">
+                                      <!-- Estructura de gastos -->
+                                      <div class="col-md-6">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                              <h5 class="card-title fw-bold text-success mb-3">9. Estructura de gastos</h5>
+                                              <p class="fw-semibold mb-1">¿Cuáles son los costos más importantes?</p>
+                                              <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.gastos_q1" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.gastos_q1 ? formData.step2.gastos_q1.length : 0 }} / 300
+                                              </div>
+
+                                              <p class="fw-semibold mt-2 mb-1">¿Qué gastos fijos y variables vas a tener?</p>
+                                              <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.gastos_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.gastos_q2 ? formData.step2.gastos_q2.length : 0 }} / 300
+                                              </div>
+
+                                              <p class="fw-semibold mt-2 mb-1">¿Por dónde se va la plata?</p>
+                                              <textarea class="form-control flex-grow-1" rows="4" [(ngModel)]="formData.step2.gastos_q3"  (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.gastos_q3 ? formData.step2.gastos_q3.length : 0 }} / 300
+                                              </div>
+                                            </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Fuente de ingresos -->
+                                      <div class="col-md-6">
+                                        <div class="card h-100 shadow-sm border-0 rounded-4">
+                                            <div class="card-body">
+                                              <h5 class="card-title fw-bold text-success mb-3">8. Fuentes de ingreso</h5>
+                                              <p class="fw-semibold mb-1">¿Cómo generas dinero?</p>
+                                              <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.ingreso_q1"  (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.ingreso_q1 ? formData.step2.ingreso_q1.length : 0 }} / 300
+                                              </div>
+
+                                              <p class="fw-semibold mt-2 mb-1">¿Cómo monetizas tu producto o servicio?</p>
+                                              <textarea class="form-control flex-grow-1 mb-2" rows="4" [(ngModel)]="formData.step2.ingreso_q2" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.ingreso_q2 ? formData.step2.ingreso_q2.length : 0 }} / 300
+                                              </div>
+
+                                              <p class="fw-semibold mt-2 mb-1">¿Cuál es tu modelo de ingresos?</p>
+                                              <textarea class="form-control flex-grow-1" rows="4" [(ngModel)]="formData.step2.ingreso_q3" (ngModelChange)="saveState()" maxlength="300"></textarea>
+                                              <div class="text-end text-muted small">
+                                                {{ formData.step2.ingreso_q3 ? formData.step2.ingreso_q3.length : 0 }} / 300
+                                              </div>
+                                            </div>
+                                        </div>
+                                      </div>
+                                  </div>
+
+                                
+                            </div>
+            
+                        
+
+                            <!-- Validation files -->
+                            <div class="col-md-12 mb-4">
+                              <h4 class="fw-bold mb-2">Documentación</h4>
+                              <label class="form-label fw-bold">
+                                Seleccione y adjunte los archivos necesarios:
+                              </label>
+
+                              <!-- DROPDOWN ANGULAR -->
+                              <div class="dropdown position-relative">
+
+                                <button
+                                  type="button"
+                                  class="btn btn-outline-success w-100 text-start d-flex align-items-center flex-wrap gap-2"
+                                  style="min-height: 45px;"
+                                  (click)="toggleDropdown(); $event.stopPropagation()">
+
+                                  <span *ngIf="selectedViabilidades.length === 0" class="text-muted">
+                                    Seleccione una o varias opciones
+                                  </span>
+
+                                  <span *ngFor="let sel of selectedViabilidades" class="chip">
+                                    {{ getLabel(sel) }}
+                                    <i
+                                      class="bi bi-x-lg remove-icon"
+                                      (click)="toggleViability(sel); $event.stopPropagation()">
+                                    </i>
+                                  </span>
+                                </button>
+
+                                <ul
+                                  class="dropdown-menu w-100 p-2 show"
+                                  *ngIf="showViabilityDropdown"
+                                  (click)="$event.stopPropagation()"
+                                  style="display: block; position: absolute; z-index: 1050;">
+
+                                  <li
+                                    *ngFor="let item of viabilityOptions"
+                                    class="dropdown-item d-flex align-items-center gap-2"
+                                    (click)="toggleViability(item.value)">
+
+                                    <input
+                                      type="checkbox"
+                                      class="form-check-input"
+                                      [checked]="selectedViabilidades.includes(item.value)"
+                                      (change)="toggleViability(item.value)"
+                                      (click)="$event.stopPropagation()">
+
+                                    <span>{{ item.label }}</span>
+
+                                  </li>
+                                </ul>
+
+
+
+                              </div>
+
+                              <small class="text-muted">
+                                Puede seleccionar varias opciones
+                              </small>
+                            </div>
+
+                             
+                            <div class="row">
+
+                              <!-- a. Vialidation of regulatory cumplience -->
+                              <div class="col-md-12 mb-3" *ngIf="selectedViabilidades?.includes('cumplimiento_normativo')">
+                                  <div class="d-flex align-items-start">
+
+                                      <div class="col-md-4">
+                                          <label class="form-label fw-bold">Validación de cumplimiento normativo:</label> 
+                                      </div>
+
+                                      <div class="col-md-8"> 
+                                          <div class="upload-container w-100" style="height: 70px;" 
+                                              (dragover)="onDragOver($event,1)" 
+                                              (dragleave)="onDragLeave($event,1)"
+                                              (drop)="onDrop($event,1,2,'cumplimiento_normativo')" 
+                                              [class.dragging]="isDragging[1]" 
+                                              (click)="fileInput1.click(); $event.stopPropagation()">
+
+                                              <div class="d-flex align-items-center justify-content-center h-100 w-100"> 
+                                              
+                                                  <div class="icon me-2" *ngIf="fileErrors['cumplimiento_normativo']; else noError1">
+                                                      <i class="bi bi-x-circle text-danger"></i>
+                                                  </div>
+                                                  <ng-template #noError1>
+                                                      <div class="icon me-2" *ngIf="!selectedFiles['cumplimiento_normativo']; else fileSelected1">
+                                                          <i class="bi bi-cloud-arrow-up"></i>
+                                                      </div>
+                                                      <ng-template #fileSelected1>
+                                                          <div class="icon success me-2">
+                                                              <i class="bi bi-check-circle-fill"></i>
+                                                          </div>
+                                                      </ng-template>
+                                                  </ng-template>
+                                                  <div class="text-truncate" style="max-width: 80%;">
+                                                      <p class="mb-0" *ngIf="fileErrors['cumplimiento_normativo']; else noErrorMessage1">
+                                                          <span class="text-danger">
+                                                              <strong>{{ fileErrors['cumplimiento_normativo'] }}</strong>
+                                                          </span>
+                                                      </p>
+                                                      <ng-template #noErrorMessage1>
+                                                          <p class="mb-0" *ngIf="!selectedFiles['cumplimiento_normativo']; else fileUploaded1">
+                                                              Arrastra tu archivo aquí o <span class="highlight">haz click aquí</span> para seleccionarlo <br>
+                                                              (JPEG, PNG o GIF)
+                                                          </p>
+                                                          <ng-template #fileUploaded1>
+                                                              <p class="mb-0">
+                                                                  Archivo cargado:<br> <strong>{{ selectedFiles['cumplimiento_normativo']?.name }}</strong>
+                                                              </p>
+                                                          </ng-template>
+                                                      </ng-template>
+                                                  </div>
+                                              </div>
+                                              <input type="file" #fileInput1 (change)="onFileSelected($event,2,'cumplimiento_normativo')" hidden accept=".jpg,.jpeg,.png">
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- b. legal validation -->
+                              <div class="col-md-12 mb-3" *ngIf="selectedViabilidades?.includes('juridica')">
+                                  <div class="d-flex align-items-start">
+                                      <div class="col-md-4">
+                                          <label class="form-label fw-bold">Validación jurídica:</label>
+                                      </div>
+                                      <div class="col-md-8">
+                                          <div class="upload-container w-100" style="height: 70px;" 
+                                              (dragover)="onDragOver($event,2)" 
+                                              (dragleave)="onDragLeave($event,2)"
+                                              (drop)="onDrop($event,2,2,'juridica')" 
+                                              [class.dragging]="isDragging[2]" 
+                                              (click)="fileInput2.click(); $event.stopPropagation()">
+                                              <div class="d-flex align-items-center justify-content-center h-100 w-100">
+                                                  <div class="icon me-2" *ngIf="fileErrors['juridica']; else noError2">
+                                                      <i class="bi bi-x-circle text-danger"></i>
+                                                  </div>
+                                                  <ng-template #noError2>
+                                                      <div class="icon me-2" *ngIf="!selectedFiles['juridica']; else fileSelected2">
+                                                          <i class="bi bi-cloud-arrow-up"></i>
+                                                      </div>
+                                                      <ng-template #fileSelected2>
+                                                          <div class="icon success me-2">
+                                                              <i class="bi bi-check-circle-fill"></i>
+                                                          </div>
+                                                      </ng-template>
+                                                  </ng-template>
+                                                  <div class="text-truncate" style="max-width: 80%;">
+                                                      <p class="mb-0" *ngIf="fileErrors['juridica']; else noErrorMessage2">
+                                                          <span class="text-danger">
+                                                              <strong>{{ fileErrors['juridica'] }}</strong>
+                                                          </span>
+                                                      </p>
+                                                      <ng-template #noErrorMessage2>
+                                                          <p class="mb-0" *ngIf="!selectedFiles['juridica']; else fileUploaded2">
+                                                              Arrastra tu archivo aquí o <span class="highlight">haz click aquí</span> para seleccionarlo <br>
+                                                              (JPEG, PNG o GIF)
+                                                          </p>
+                                                          <ng-template #fileUploaded2>
+                                                              <p class="mb-0">
+                                                                  Archivo cargado: <br><strong>{{ selectedFiles['juridica']?.name }}</strong>
+                                                              </p>
+                                                          </ng-template>
+                                                      </ng-template>
+                                                  </div>
+                                              </div>
+                                              <input type="file" #fileInput2 (change)="onFileSelected($event,2,'juridica')" hidden accept=".jpg,.jpeg,.png" >
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- c. Validation of information segurity -->
+                              <div class="col-md-12 mb-3" *ngIf="selectedViabilidades?.includes('seguridad_informacion')">
+                                  <div class="d-flex align-items-start">
+                                      <div class="col-md-4">
+                                          <label class="form-label fw-bold">Validación de seguridad de la información:</label>
+                                      </div>
+                                      <div class="col-md-8">
+                                          <div class="upload-container w-100" style="height: 70px;" 
+                                              (dragover)="onDragOver($event,3)" 
+                                              (dragleave)="onDragLeave($event,3)"
+                                              (drop)="onDrop($event,3,2,'seguridad_informacion')" 
+                                              [class.dragging]="isDragging[3]" 
+                                              (click)="fileInput3.click(); $event.stopPropagation()">
+                                              <div class="d-flex align-items-center justify-content-center h-100 w-100">
+                                                  <div class="icon me-2" *ngIf="fileErrors['seguridad_informacion']; else noError3">
+                                                      <i class="bi bi-x-circle text-danger"></i>
+                                                  </div>
+                                                  <ng-template #noError3>
+                                                      <div class="icon me-2" *ngIf="!selectedFiles['seguridad_informacion']; else fileSelected3">
+                                                          <i class="bi bi-cloud-arrow-up"></i>
+                                                      </div>
+                                                      <ng-template #fileSelected3>
+                                                          <div class="icon success me-2">
+                                                              <i class="bi bi-check-circle-fill"></i>
+                                                          </div>
+                                                      </ng-template>
+                                                  </ng-template>
+                                                  <div class="text-truncate" style="max-width: 80%;">
+                                                      <p class="mb-0" *ngIf="fileErrors['seguridad_informacion']; else noErrorMessage3">
+                                                          <span class="text-danger">
+                                                              <strong>{{ fileErrors['seguridad_informacion'] }}</strong>
+                                                          </span>
+                                                      </p>
+                                                      <ng-template #noErrorMessage3>
+                                                          <p class="mb-0" *ngIf="!selectedFiles['seguridad_informacion']; else fileUploaded3">
+                                                              Arrastra tu archivo aquí o <span class="highlight">haz click aquí</span> para seleccionarlo <br>
+                                                              (JPEG, PNG o GIF)
+                                                          </p>
+                                                          <ng-template #fileUploaded3>
+                                                              <p class="mb-0">
+                                                                  Archivo cargado:<br> <strong>{{ selectedFiles['seguridad_informacion']?.name }}</strong>
+                                                              </p>
+                                                          </ng-template>
+                                                      </ng-template>
+                                                  </div>
+                                              </div>
+                                              <input type="file" #fileInput3 (change)="onFileSelected($event,2,'seguridad_informacion')" hidden accept=".jpg,.jpeg,.png" >
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- d. Vialidación de riesgo -->
+                              <div class="col-md-12 mb-3" *ngIf="selectedViabilidades?.includes('riesgo')">
+                                <div class="d-flex align-items-start">
+                                  <div class="col-md-4">
+                                      <label class="form-label fw-bold">Validación de riesgos:</label>
+                                  </div>
+                                  
+                                  <div class="col-md-8">
+                                      <div class="upload-container w-100" style="height: 70px;" 
+                                          (dragover)="onDragOver($event,4)" 
+                                          (dragleave)="onDragLeave($event,4)"
+                                          (drop)="onDrop($event,4,2,'riesgo')" 
+                                          [class.dragging]="isDragging[4]" 
+                                          (click)="fileInput4.click(); $event.stopPropagation()">
+                                          <div class="d-flex align-items-center justify-content-center h-100 w-100">
+                                              <div class="icon me-2" *ngIf="fileErrors['riesgo']; else noError4">
+                                                  <i class="bi bi-x-circle text-danger"></i>
+                                              </div>
+                                              <ng-template #noError4>
+                                                  <div class="icon me-2" *ngIf="!selectedFiles['riesgo']; else fileSelected4">
+                                                      <i class="bi bi-cloud-arrow-up"></i>
+                                                  </div>
+                                                  <ng-template #fileSelected4>
+                                                      <div class="icon success me-2">
+                                                          <i class="bi bi-check-circle-fill"></i>
+                                                      </div>
+                                                  </ng-template>
+                                              </ng-template>
+                                              <div class="text-truncate" style="max-width: 80%;">
+                                                  <p class="mb-0" *ngIf="fileErrors['riesgo']; else noErrorMessage4">
+                                                      <span class="text-danger">
+                                                          <strong>{{ fileErrors['riesgo'] }}</strong>
+                                                      </span>
+                                                  </p>
+                                                  <ng-template #noErrorMessage4>
+                                                      <p class="mb-0" *ngIf="!selectedFiles['riesgo']; else fileUploaded4">
+                                                          Arrastra tu archivo aquí o <span class="highlight">haz click aquí</span> para seleccionarlo <br>
+                                                          (JPEG, PNG o GIF)
+                                                      </p>
+                                                      <ng-template #fileUploaded4>
+                                                          <p class="mb-0">
+                                                              Archivo cargado: <br><strong>{{ selectedFiles['riesgo']?.name }}</strong>
+                                                          </p>
+                                                      </ng-template>
+                                                  </ng-template>
+                                              </div>
+                                          </div>
+                                          <input type="file" #fileInput4 (change)="onFileSelected($event,2,'riesgo')" hidden accept=".jpg,.jpeg,.png" >
+                                      </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <!-- e. Vialidación de finops-->
+                              <div class="col-md-12 mb-3" *ngIf="selectedViabilidades?.includes('finops')">
+                                  <div class="d-flex align-items-start">
+
+                                      <div class="col-md-4">
+                                          <label class="form-label fw-bold">Validación de buenas prácticas (FinOps):</label>
+                                      </div>
+
+                                      <div class="col-md-8">
+                                          <div class="upload-container w-100" style="height: 70px;" 
+                                              (dragover)="onDragOver($event,5)" 
+                                              (dragleave)="onDragLeave($event,5)"
+                                              (drop)="onDrop($event,5,2,'finops')" 
+                                              [class.dragging]="isDragging[5]" 
+                                              (click)="fileInput5.click(); $event.stopPropagation()">
+                                              <div class="d-flex align-items-center justify-content-center h-100 w-100">
+                                                  <div class="icon me-2" *ngIf="fileErrors['finops']; else noError5">
+                                                      <i class="bi bi-x-circle text-danger"></i>
+                                                  </div>
+                                                  <ng-template #noError5>
+                                                      <div class="icon me-2" *ngIf="!selectedFiles['finops']; else fileSelected5">
+                                                          <i class="bi bi-cloud-arrow-up"></i>
+                                                      </div>
+                                                      <ng-template #fileSelected5>
+                                                          <div class="icon success me-2">
+                                                              <i class="bi bi-check-circle-fill"></i>
+                                                          </div>
+                                                      </ng-template>
+                                                  </ng-template>
+                                                  <div class="text-truncate" style="max-width: 80%;">
+                                                      <p class="mb-0" *ngIf="fileErrors['finops']; else noErrorMessage5">
+                                                          <span class="text-danger">
+                                                              <strong>{{ fileErrors['finops'] }}</strong>
+                                                          </span>
+                                                      </p>
+                                                      <ng-template #noErrorMessage5>
+                                                          <p class="mb-0" *ngIf="!selectedFiles['finops']; else fileUploaded5">
+                                                              Arrastra tu archivo aquí o <span class="highlight">haz click aquí</span> para seleccionarlo<br>
+                                                                (JPEG, PNG o GIF)
+                                                          </p>
+                                                          <ng-template #fileUploaded5>
+                                                              <p class="mb-0">
+                                                                  Archivo cargado: <br><strong>{{ selectedFiles['finops']?.name }}</strong>
+                                                              </p>
+                                                          </ng-template>
+                                                      </ng-template>
+                                                  </div>
+                                              </div>
+                                              <input type="file" #fileInput5 (change)="onFileSelected($event,2,'finops')" hidden accept=".jpg,.jpeg,.png">
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+
+                              <!-- f. Caso de negocio-->
+                              <div class="col-md-12 mb-3" *ngIf="selectedViabilidades?.includes('caso_negocio')">
+                                <div class="d-flex align-items-start">
+
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold">Archivo - Caso de negocio:</label>
+                                    </div>
+
+                                    <div class="col-md-8">
+                                        <div class="upload-container w-100" style="height: 70px;" 
+                                            (dragover)="onDragOver($event,6)" 
+                                            (dragleave)="onDragLeave($event,6)"
+                                            (drop)="onDrop($event,6,1,'caso_negocio')" 
+                                            [class.dragging]="isDragging[6]" 
+                                            (click)="fileInput6.click()">
+                                            <div class="d-flex align-items-center justify-content-center h-100 w-100">
+                                                <div class="icon me-2" *ngIf="fileErrors['caso_negocio']; else noError6">
+                                                    <i class="bi bi-x-circle text-danger"></i>
+                                                </div>
+                                                <ng-template #noError6>
+                                                    <div class="icon me-2" *ngIf="!selectedFiles['caso_negocio']; else fileSelected6">
+                                                        <i class="bi bi-cloud-arrow-up"></i>
+                                                    </div>
+                                                    <ng-template #fileSelected6>
+                                                        <div class="icon success me-2">
+                                                            <i class="bi bi-check-circle-fill"></i>
+                                                        </div>
+                                                    </ng-template>
+                                                </ng-template>
+                                                <div class="text-truncate" style="max-width: 80%;">
+                                                    <p class="mb-0" *ngIf="fileErrors['caso_negocio']; else noErrorMessage6">
+                                                        <span class="text-danger">
+                                                            <strong>{{ fileErrors['caso_negocio'] }}</strong>
+                                                        </span>
+                                                    </p>
+                                                    <ng-template #noErrorMessage6>
+                                                        <p class="mb-0" *ngIf="!selectedFiles['caso_negocio']; else fileUploaded6">
+                                                          Arrastra tu archivo aquí o <span class="highlight">haz click aquí </span>para seleccionarlo<br>
+                                                            (.xls, .xlsx, application/vnd.ms-excel, .sheet)
+                                                        </p>
+                                                        <ng-template #fileUploaded6>
+                                                            <p class="mb-0">
+                                                                Archivo cargado:<br> <strong>{{ selectedFiles['caso_negocio']?.name }}</strong>
+                                                            </p>
+                                                        </ng-template>
+                                                    </ng-template>
+                                                </div>
+                                            </div>
+                                            <input type="file" #fileInput6 (change)="onFileSelected($event,1,'caso_negocio')" hidden accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
+                                        </div>
+                                    </div>
+
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-4">
+                              <button type="button" class="btn btn-success" (click)="updateData()">Actualizar</button>
+                            </div>
+                    
+                  </ng-template>
+                </ng-template>
+              </ng-template>
+            </div>        
+      </div>
+    </div>
+
+    <!--Observation and comments-->
+    <div class="col-4 p-4 right-content">
+
+      <h5 class="fw-bold text-primary mb-3">
+              <i class="bi bi-chat-dots me-2"></i>Observaciones y comentarios
+      </h5>
+
+      <ng-container *ngIf="registroSeleccionado.comentarios?.length > 0; else noComentarios">
+                
+                                
+                      <div *ngFor="let comentario of registroSeleccionado.comentarios" 
+                          class="comentario-item bg-white rounded-3 p-3 mb-3 shadow-sm border-start border-4 border-success position-relative">
+                          
+                          <div class="d-flex justify-content-between align-items-center mb-1">
+                              <span class="fw-bold text-dark">
+                                  <i class="bi bi-person-circle me-1 text-success"></i>
+                                  {{ comentario.userId || 'Anónimo' }} - {{ comentario.tipoSolicitud || 'Anónimo' }}
+                              </span>
+                              <small class="text-muted fst-italic">
+                                  {{ formatDate(comentario.fecha) || 'Sin fecha' }}
+                              </small>
+                          </div>
+
+                          <p class="mb-0 text-secondary small">
+                              {{ comentario.comentarioAjuste }}
+                          </p>
+
+                      </div>
+
+                  </ng-container>
+
+                  <ng-template #noComentarios>
+                    <div class="text-center text-muted small py-3">
+                      <i class="bi bi-inbox me-1"></i> Aún no hay observaciones registradas para esta radicación.
+                    </div>
+                  </ng-template>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal error: Complete all form -->
+<div class="modal d-block" tabindex="-1" role="dialog" *ngIf="showModal">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">⚠️ Error de Validación</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{ errorMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="closeModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade show" *ngIf="showModal"></div>
+
+
+
+
